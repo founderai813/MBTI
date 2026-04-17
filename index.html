@@ -1047,6 +1047,124 @@ var WORKER_URL = 'https://api.futurestarai.com';
 var GEMINI_EP = WORKER_URL + '/gemini';
 var STATS_EP = WORKER_URL + '/mbti-stats';
 var FORM_EP = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+var lang = 'zh';
+var currentSection = 'home';
+var answers = {};
+var currentQ = 0;
+var myResult = null;
+var barChart = null;
+var doChart = null;
+
+function t(key) { return T[lang][key] || key; }
+
+function setText(id, html) {
+  var el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function() { el.classList.remove('show'); }, 3200);
+}
+
+function showSection(id) {
+  document.getElementById('home').classList.toggle('hidden', id !== 'home');
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  if (id !== 'home') {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+  var navMap = {home:'nav-home',intro:'nav-intro',quiz:'nav-quiz',result:'nav-quiz',compat:'nav-compat',stats:'nav-stats',instructor:'nav-instructor',course:'nav-course'};
+  document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
+  var navEl = document.getElementById(navMap[id]);
+  if (navEl) navEl.classList.add('active');
+  currentSection = id;
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (id === 'stats') loadStats();
+}
+
+function applyLang() {
+  document.getElementById('langBtn').textContent = lang === 'zh' ? 'EN' : '中文';
+  var ids = ['nav-home','nav-intro','nav-quiz','nav-compat','nav-stats','nav-instructor','nav-course',
+    'heroBadge','heroSub','heroQuizBtn','heroIntroBtn',
+    'introTag','introTitle','introSub','typesTitle','typesSub',
+    'quizTag','quizTitle','quizSub',
+    'compatTag','compatTitle','compatSub','compatLblA','compatLblB',
+    'statsTag','statsTitle','statsSub','statsBar','statsDo',
+    'instTag','instTitle','instSub','instName','instRole','instBio',
+    'courseTag','courseTitle','courseSub','fLblName','fLblMbti','fLblGoal','fLblNote','formSubmit','formNote'];
+  var keys = ['navHome','navIntro','navQuiz','navCompat','navStats','navInst','navCourse',
+    'heroBadge','heroSub','heroQuiz','heroIntro',
+    'introTag','introTitle','introSub','typesTitle','typesSub',
+    'quizTag','quizTitle','quizSub',
+    'compatTag','compatTitle','compatSub','compatLblA','compatLblB',
+    'statsTag','statsTitle','statsSub','statsBar','statsDo',
+    'instTag','instTitle','instSub','instName','instRole','instBio',
+    'courseTag','courseTitle','courseSub','fName','fMbti','fGoal','fNote','fSubmit','fFormNote'];
+  ids.forEach(function(id, i) { setText(id, t(keys[i])); });
+  renderDims();
+  renderTypes();
+  renderCompatSelects();
+  buildFormSelect();
+  if (currentSection === 'quiz') renderQuiz();
+}
+
+function renderPills() {
+  var container = document.getElementById('homePills');
+  var colors = ['#FF6B9D','#9B59F5','#4ECDC4','#FFD93D','#FF8C42','#6BCB77','#4D96FF','#FF6B6B'];
+  Object.keys(TYPES).forEach(function(code, i) {
+    var pill = document.createElement('div');
+    pill.className = 'type-pill';
+    var c = colors[i % colors.length];
+    pill.style.cssText = 'color:'+c+';border-color:'+c+';background:'+c+'22;padding:6px 14px;border-radius:999px;font-size:0.8rem;font-weight:800;border:2px solid;cursor:pointer;transition:all 0.2s;';
+    pill.textContent = code;
+    pill.addEventListener('click', function() { showSection('intro'); });
+    container.appendChild(pill);
+  });
+}
+
+function renderDims() {
+  var grid = document.getElementById('dimsGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  DIMS.forEach(function(d) {
+    var card = document.createElement('div');
+    card.className = 'dim-card';
+    card.style.borderColor = d.color + '44';
+    card.innerHTML = '<div style="font-size:2.2rem;margin-bottom:0.75rem">'+d.icon+'</div>'
+      +'<div style="font-size:1rem;font-weight:900;margin-bottom:0.5rem;color:'+d.color+'">'+d.title[lang]+'</div>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin:0.75rem 0;font-size:0.82rem;font-weight:800">'
+      +'<div style="flex:1;padding:4px 10px;border-radius:999px;text-align:center;background:'+d.color+'1A;color:'+d.color+'">'+d.lbl[lang]+'</div>'
+      +'<span style="color:var(--muted)">vs</span>'
+      +'<div style="flex:1;padding:4px 10px;border-radius:999px;text-align:center;background:'+d.color+'1A;color:'+d.color+'">'+d.rbr[lang]+'</div>'
+      +'</div>'
+      +'<div style="font-size:0.85rem;color:var(--muted);line-height:1.6">'+d.desc[lang]+'</div>';
+    grid.appendChild(card);
+  });
+}
+
+function renderTypes() {
+  var grid = document.getElementById('typesGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.keys(TYPES).forEach(function(code) {
+    var d = TYPES[code];
+    var card = document.createElement('div');
+    card.className = 'type-card';
+    card.style.cssText = 'border-color:'+d.color+'44;background:'+d.color+'0D;border:2px solid '+d.color+'44;border-radius:12px;padding:1.25rem;cursor:pointer;transition:all 0.25s;';
+    card.innerHTML = '<div style="font-size:1.5rem">'+d.emoji+'</div>'
+      +'<div style="font-size:1.4rem;font-weight:900;margin-bottom:0.25rem;color:'+d.color+'">'+code+'</div>'
+      +'<div style="font-size:0.78rem;font-weight:700;opacity:0.75;margin-bottom:0.5rem;color:'+d.color+'">'+d.name[lang]+'</div>'
+      +'<div style="font-size:0.78rem;line-height:1.5;color:var(--muted)">'+d.desc[lang]+'</div>';
+    card.addEventListener('mouseenter', function() { card.style.transform = 'translateY(-4px)'; });
+    card.addEventListener('mouseleave', function() { card.style.transform = ''; });
+    card.addEventListener('click', function() { showToast(code+' '+d.emoji+' '+d.name[lang]+' · '+d.traits[lang].join(' · ')); });
+    grid.appendChild(card);
+  });
+}
 </script>
 </body>
 </html>
