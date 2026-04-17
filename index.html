@@ -778,16 +778,142 @@ footer{
 </div>
 
 <!-- 各頁面（空的，之後填內容） -->
-<div id="intro" class="page"></div>
-<div id="quiz" class="page"></div>
-<div id="result" class="page"></div>
-<div id="compat" class="page"></div>
-<div id="stats" class="page"></div>
-<div id="instructor" class="page"></div>
-<div id="course" class="page"></div>
+<div id="intro" class="page">
+<section>
+  <div class="tag" id="introTag">什麼是MBTI</div>
+  <h2 class="section-title" id="introTitle">四個維度，十六種人格</h2>
+  <p class="section-sub" id="introSub">MBTI 測量你在四個心理維度上的偏好</p>
+  <div class="dims-grid" id="dimsGrid"></div>
+  <br><br>
+  <h2 class="section-title" id="typesTitle">✨ 十六種人格</h2>
+  <p class="section-sub" id="typesSub">點選任一型態了解詳情</p>
+  <div class="types-grid" id="typesGrid"></div>
+</section>
+</div>
+<div id="quiz" class="page">
+<section style="max-width:700px;">
+  <div class="tag" id="quizTag">雀雀認證測驗</div>
+  <h2 class="section-title" id="quizTitle">開始你的MBTI測驗</h2>
+  <p class="section-sub" id="quizSub">20題情境式問題，約需5分鐘</p>
+  <div class="quiz-wrapper" id="quizWrapper"></div>
+</section>
+</div>
+<div id="result" class="page">
+<section style="max-width:700px;">
+  <div class="tag">你的測驗結果</div>
+  <h2 class="section-title">🎉 結果揭曉！</h2>
+  <div class="result-wrap" id="resultWrap"></div>
+</section>
+</div>
+<div id="compat" class="page">
+<section>
+  <div class="tag" id="compatTag">配對相容性</div>
+  <h2 class="section-title" id="compatTitle">你們合適嗎？</h2>
+  <p class="section-sub" id="compatSub">選擇兩種MBTI型態，看看相處化學</p>
+  <div class="compat-sel">
+    <div>
+      <div class="compat-lbl" id="compatLblA">第一個人</div>
+      <select class="compat-select" id="compatA"></select>
+    </div>
+    <div class="compat-heart">💞</div>
+    <div>
+      <div class="compat-lbl" id="compatLblB">第二個人</div>
+      <select class="compat-select" id="compatB"></select>
+    </div>
+  </div>
+  <div class="compat-result" id="compatResult"></div>
+</section>
+</div>
+<div id="stats" class="page">
+<section>
+  <div class="tag" id="statsTag">即時統計</div>
+  <h2 class="section-title" id="statsTitle">大家都是什麼型？</h2>
+  <p class="section-sub" id="statsSub">統計所有完成測驗者的MBTI分佈</p>
+  <div class="stats-grid">
+    <div class="stats-card"><h3 id="statsBar">📊 型態分佈</h3><canvas id="barChart" height="260"></canvas></div>
+    <div class="stats-card"><h3 id="statsDo">🍩 大類佔比</h3><canvas id="doChart" height="260"></canvas></div>
+  </div>
+  <p style="text-align:center;font-size:0.82rem;color:var(--muted);margin-top:1.5rem" id="statsTotal">載入中...</p>
+</section>
+</div>
+<div id="instructor" class="page">
+<section>
+  <div class="tag" id="instTag">關於講師</div>
+  <h2 class="section-title" id="instTitle">認識雀雀</h2>
+  <p class="section-sub" id="instSub">MBTI 認證講師｜人格心理學研究者</p>
+  <div class="inst-card">
+    <div class="inst-avatar">🐦</div>
+    <div>
+      <div class="inst-name" id="instName">雀雀 Queque</div>
+      <div class="inst-title-role" id="instRole">MBTI 認證講師 ✦ 人格心理學研究者</div>
+      <p class="inst-bio" id="instBio">（講師資料即將更新，敬請期待）</p>
+      <div class="inst-tags">
+        <span class="inst-tag">MBTI認證</span>
+        <span class="inst-tag">人格心理學</span>
+        <span class="inst-tag">關係溝通</span>
+        <span class="inst-tag">職場應用</span>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<div id="course" class="page">
+<section>
+  <div class="tag" id="courseTag">課程報名</div>
+  <h2 class="section-title" id="courseTitle">加入雀雀的課程</h2>
+  <p class="section-sub" id="courseSub">了解自己、理解他人，從MBTI開始</p>
+  <div class="course-card">
+    <div class="form-group">
+      <label class="form-label" id="fLblName">姓名 / 暱稱 *</label>
+      <input class="form-input" id="fName" type="text" placeholder="你的名字">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email *</label>
+      <input class="form-input" id="fEmail" type="email" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="fLblMbti">你的 MBTI（可選填）</label>
+      <select class="form-input" id="fMbti"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="fLblGoal">你最想在課程中得到什麼？</label>
+      <select class="form-input" id="fGoal">
+        <option value="self">更了解自己</option>
+        <option value="relation">改善人際關係</option>
+        <option value="work">職場溝通應用</option>
+        <option value="couple">伴侶/家庭關係</option>
+        <option value="other">其他</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="fLblNote">備註（選填）</label>
+      <textarea class="form-input" id="fNote" rows="3" style="resize:vertical"></textarea>
+    </div>
+    <button class="form-submit" id="formSubmit">🎉 送出報名</button>
+    <p class="form-note" id="formNote">資料僅用於課程聯繫，不會外流</p>
+  </div>
+</section>
+</div>
 
 <!-- Modal + Toast + Footer（空的） -->
-<div class="modal-bg" id="shareModal"></div>
+<div class="modal-bg" id="shareModal">
+<div>
+  <div class="share-card">
+    <div class="share-inner">
+      <div class="sc-logo">🧠 雀雀認證 MBTI</div>
+      <div class="sc-type" id="scType">ENFP</div>
+      <div class="sc-name" id="scName">活動家</div>
+      <div class="sc-desc" id="scDesc">充滿熱情與創造力的靈魂</div>
+      <div class="sc-traits" id="scTraits"></div>
+      <div class="sc-mark">queque-mbti.com</div>
+    </div>
+  </div>
+  <div class="modal-actions">
+    <button class="modal-btn modal-dl" id="modalDl">📸 儲存圖片</button>
+    <button class="modal-btn modal-cl" id="modalCl">關閉</button>
+  </div>
+</div>
+</div>
 <div class="toast" id="toast"></div>
 <footer><p>© 2026 雀雀認證MBTI · 用心理學認識自己 🧠💜</p></footer>
 
