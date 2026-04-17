@@ -1413,6 +1413,44 @@ function submitForm() {
     .then(function() { showToast(t('toastOk')); document.getElementById('fName').value = ''; document.getElementById('fEmail').value = ''; document.getElementById('fNote').value = ''; })
     .catch(function() { showToast(t('toastErr')); });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  renderPills();
+  renderDims();
+  renderTypes();
+  renderQuiz();
+  renderCompatSelects();
+  buildFormSelect();
+
+  document.getElementById('langBtn').addEventListener('click', function() {
+    lang = lang === 'zh' ? 'en' : 'zh';
+    applyLang();
+  });
+
+  document.getElementById('nav-home').addEventListener('click', function(e) { e.preventDefault(); showSection('home'); });
+  document.getElementById('nav-intro').addEventListener('click', function(e) { e.preventDefault(); showSection('intro'); });
+  document.getElementById('nav-quiz').addEventListener('click', function(e) { e.preventDefault(); showSection('quiz'); renderQuiz(); });
+  document.getElementById('nav-compat').addEventListener('click', function(e) { e.preventDefault(); showSection('compat'); });
+  document.getElementById('nav-stats').addEventListener('click', function(e) { e.preventDefault(); showSection('stats'); });
+  document.getElementById('nav-instructor').addEventListener('click', function(e) { e.preventDefault(); showSection('instructor'); });
+  document.getElementById('nav-course').addEventListener('click', function(e) { e.preventDefault(); showSection('course'); });
+
+  document.getElementById('heroQuizBtn').addEventListener('click', function() { showSection('quiz'); renderQuiz(); });
+  document.getElementById('heroIntroBtn').addEventListener('click', function() { showSection('intro'); });
+
+  document.getElementById('compatA').addEventListener('change', calcCompat);
+  document.getElementById('compatB').addEventListener('change', calcCompat);
+
+  document.getElementById('formSubmit').addEventListener('click', submitForm);
+
+  document.getElementById('modalDl').addEventListener('click', function() { showToast(t('toastScreenshot')); });
+  document.getElementById('modalCl').addEventListener('click', function() { document.getElementById('shareModal').classList.remove('open'); });
+  document.getElementById('shareModal').addEventListener('click', function(e) {
+    if (e.target === document.getElementById('shareModal')) {
+      document.getElementById('shareModal').classList.remove('open');
+    }
+  });
+});
 </script>
 </body>
 </html>
