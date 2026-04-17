@@ -1165,6 +1165,128 @@ function renderTypes() {
     grid.appendChild(card);
   });
 }
+
+function renderQuiz() {
+  var wrapper = document.getElementById('quizWrapper');
+  if (!wrapper) return;
+  var q = QS[currentQ];
+  var total = QS.length;
+  var pct = Math.round((currentQ / total) * 100);
+  var sel = answers[currentQ];
+  var isLast = currentQ === total - 1;
+  var optsHTML = '';
+  for (var i = 0; i < q.opts.length; i++) {
+    optsHTML += '<button class="quiz-opt' + (sel === i ? ' selected' : '') + '" data-idx="' + i + '">' + q.opts[i][lang] + '</button>';
+  }
+  wrapper.innerHTML = '<div class="quiz-header">'
+    + '<div class="quiz-cat">' + q.cat[lang] + '</div>'
+    + '<div style="font-size:1rem;font-weight:800;margin-top:2px">' + (lang === 'zh' ? '第' : 'Q') + (currentQ + 1) + (lang === 'zh' ? '題' : '') + ' / ' + total + '</div>'
+    + '<div class="quiz-pbar"><div class="quiz-pfill" style="width:' + pct + '%"></div></div>'
+    + '<div style="font-size:0.82rem;opacity:0.8;margin-top:4px">' + t('progress') + ' ' + pct + '%</div>'
+    + '</div>'
+    + '<div class="quiz-body">'
+    + '<div class="quiz-q">' + q.q[lang] + '</div>'
+    + '<div class="quiz-opts">' + optsHTML + '</div>'
+    + '</div>'
+    + '<div class="quiz-footer">'
+    + '<button class="quiz-back" id="qBack">' + (currentQ === 0 ? t('restart') : t('back')) + '</button>'
+    + '<button class="quiz-next' + (sel !== undefined ? ' on' : '') + '" id="qNext">' + (isLast ? t('finish') : t('next')) + '</button>'
+    + '</div>';
+  wrapper.querySelectorAll('.quiz-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      answers[currentQ] = parseInt(btn.getAttribute('data-idx'));
+      renderQuiz();
+    });
+  });
+  document.getElementById('qBack').addEventListener('click', function() {
+    if (currentQ === 0) { answers = {}; currentQ = 0; renderQuiz(); }
+    else { currentQ--; renderQuiz(); }
+  });
+  document.getElementById('qNext').addEventListener('click', function() {
+    if (answers[currentQ] === undefined) return;
+    if (currentQ < QS.length - 1) { currentQ++; renderQuiz(); }
+    else { calcResult(); }
+  });
+}
+
+function calcResult() {
+  var sc = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  for (var i = 0; i < QS.length; i++) {
+    var a = answers[i];
+    if (a !== undefined) sc[QS[i].opts[a].e]++;
+  }
+  var type = (sc.E >= sc.I ? 'E' : 'I') + (sc.S >= sc.N ? 'S' : 'N') + (sc.T >= sc.F ? 'T' : 'F') + (sc.J >= sc.P ? 'J' : 'P');
+  myResult = {type: type, sc: sc};
+  recordStat(type);
+  showSection('result');
+  renderResult(type, sc);
+  fetchAI(type);
+}
+
+function renderResult(type, sc) {
+  var d = TYPES[type] || {name:{zh:type,en:type},emoji:'🧠',color:'#9B59F5',traits:{zh:[],en:[]},desc:{zh:'',en:''}};
+  var pE = Math.round(sc.E / (sc.E + sc.I) * 100);
+  var pS = Math.round(sc.S / (sc.S + sc.N) * 100);
+  var pT = Math.round(sc.T / (sc.T + sc.F) * 100);
+  var pJ = Math.round(sc.J / (sc.J + sc.P) * 100);
+  var bars = [{l:'E',r:'I',p:pE,c:'#FF6B9D'},{l:'S',r:'N',p:pS,c:'#9B59F5'},{l:'T',r:'F',p:pT,c:'#4ECDC4'},{l:'J',r:'P',p:pJ,c:'#FFD93D'}];
+  var barsHTML = '';
+  for (var i = 0; i < bars.length; i++) {
+    var b = bars[i];
+    barsHTML += '<div style="margin-bottom:0.75rem">'
+      + '<div style="display:flex;justify-content:space-between;font-size:0.82rem;font-weight:800;margin-bottom:4px"><span>' + b.l + ' ' + b.p + '%</span><span>' + (100 - b.p) + '% ' + b.r + '</span></div>'
+      + '<div style="height:14px;border-radius:999px;background:#F3F4F6">'
+      + '<div style="height:100%;border-radius:999px;background:' + b.c + ';width:' + b.p + '%"></div></div></div>';
+  }
+  var traitsHTML = '';
+  for (var i = 0; i < d.traits[lang].length; i++) {
+    traitsHTML += '<span style="padding:6px 16px;border-radius:999px;font-size:0.82rem;font-weight:800;background:' + d.color + '1A;color:' + d.color + '">' + d.traits[lang][i] + '</span>';
+  }
+  document.getElementById('resultWrap').innerHTML =
+    '<div style="display:inline-flex;align-items:center;gap:12px;padding:1rem 2rem;border-radius:20px;font-size:2rem;font-weight:900;margin-bottom:1.5rem;color:white;background:linear-gradient(135deg,' + d.color + ',' + d.color + '99)">'
+    + '<span style="font-size:2.5rem">' + d.emoji + '</span>'
+    + '<div><div>' + type + '</div><div style="font-size:1rem;opacity:0.85">' + d.name[lang] + '</div></div></div>'
+    + '<p style="color:var(--muted);font-size:0.95rem;line-height:1.7;margin-bottom:1rem">' + d.desc[lang] + '</p>'
+    + '<div style="margin:2rem 0">' + barsHTML + '</div>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:1.5rem 0">' + traitsHTML + '</div>'
+    + '<div style="background:linear-gradient(135deg,rgba(155,89,245,0.06),rgba(255,107,157,0.06));border:2px solid rgba(155,89,245,0.2);border-radius:12px;padding:1.25rem;text-align:left;margin:1.5rem 0" id="aiBox">'
+    + '<div style="font-size:0.78rem;font-weight:800;color:#9B59F5;margin-bottom:0.5rem">' + t('aiLabel') + '</div>'
+    + '<div id="aiContent" style="font-size:0.9rem;line-height:1.7;color:var(--muted);font-style:italic">' + t('aiLoading') + '</div></div>'
+    + '<button id="shareResultBtn" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#FF6B9D,#9B59F5);color:white;font-size:1rem;font-weight:800;cursor:pointer;margin-top:1rem;font-family:inherit">' + t('shareBtn') + '</button>'
+    + '<button id="retryBtn" style="width:100%;padding:12px;border-radius:12px;border:2.5px solid #9B59F5;background:transparent;color:#9B59F5;font-size:0.95rem;font-weight:800;cursor:pointer;margin-top:0.75rem;font-family:inherit">' + t('retryBtn') + '</button>';
+  document.getElementById('shareResultBtn').addEventListener('click', function() { openShare(type); });
+  document.getElementById('retryBtn').addEventListener('click', function() {
+    answers = {}; currentQ = 0; myResult = null;
+    showSection('quiz'); renderQuiz();
+  });
+}
+
+function fetchAI(type) {
+  var d = TYPES[type] || {name:{zh:type,en:type}};
+  var prompt = lang === 'zh'
+    ? '你是MBTI人格分析師。用戶測出的型態是' + type + '（' + d.name.zh + '）。請用繁體中文，以溫暖友善的語氣，針對這個型態給出2-3句個人化的分析與鼓勵，不要列點，要像跟朋友說話一樣自然。'
+    : 'You are an MBTI analyst. The user\'s result is ' + type + ' (' + d.name.en + '). In 2-3 sentences, give warm personalized encouragement. Write naturally like talking to a friend.';
+  var fallbacks = {
+    ENFP:{zh:'你是那種走進一個房間就能讓氣氛整個活起來的人。你的熱情和創造力是超能力，記得也要給自己一些慢下來的空間。',en:'You light up every room you walk into. Your enthusiasm and creativity are superpowers — just remember to give yourself space to slow down too.'},
+    INTJ:{zh:'你的腦袋裡永遠有五步棋在運轉，別人還在反應你早已想到解法了。記得讓身邊的人跟上你的節奏。',en:'Your mind is always five moves ahead. While others are reacting, you\'ve already found the solution. Remember to let people around you catch up.'},
+    INFP:{zh:'你對這個世界有著深刻的感受與理解，你的善良和真誠是最珍貴的禮物。記得也好好珍惜自己。',en:'You feel and understand the world deeply. Your kindness and authenticity are precious gifts. Remember to take care of yourself too.'},
+    ENTP:{zh:'你的思維跳躍快速，總能在對話中開拓新的可能性。記得給其他人一點時間跟上你的思路。',en:'Your mind leaps quickly, always opening new possibilities. Remember to give others a little time to keep up with your thinking.'},
+    INFJ:{zh:'你擁有看穿人心的直覺，和推動改變的堅定意志。記得在照顧別人之前，先照顧好自己。',en:'You have the intuition to see through people and the will to drive change. Remember to take care of yourself before caring for others.'},
+    ISTJ:{zh:'你是大家最信賴的那個人，事情交到你手上大家都放心。記得偶爾也讓自己放鬆，你值得休息。',en:'You\'re the person everyone trusts most. When things are in your hands, everyone relaxes. Remember to rest — you\'ve earned it.'}
+  };
+  var fb = fallbacks[type] || {zh: type + '型的你有著獨特的魅力，繼續做自己吧！', en: 'As a ' + type + ', you have a unique charm — keep being yourself!'};
+  fetch(GEMINI_EP, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({prompt: prompt})})
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var text = (data && (data.text || (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text))) || fb[lang];
+      var el = document.getElementById('aiContent');
+      if (el) { el.style.fontStyle = 'normal'; el.style.color = 'var(--text)'; el.textContent = text; }
+    })
+    .catch(function() {
+      var el = document.getElementById('aiContent');
+      if (el) { el.style.fontStyle = 'normal'; el.style.color = 'var(--text)'; el.textContent = fb[lang]; }
+    });
+}
 </script>
 </body>
 </html>
