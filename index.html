@@ -1287,6 +1287,132 @@ function fetchAI(type) {
       if (el) { el.style.fontStyle = 'normal'; el.style.color = 'var(--text)'; el.textContent = fb[lang]; }
     });
 }
+
+function openShare(type) {
+  var d = TYPES[type] || {name:{zh:type,en:type},emoji:'🧠',traits:{zh:[],en:[]},desc:{zh:'',en:''}};
+  document.getElementById('scType').textContent = type + ' ' + d.emoji;
+  document.getElementById('scName').textContent = d.name[lang];
+  document.getElementById('scDesc').textContent = d.desc[lang];
+  var traitsEl = document.getElementById('scTraits');
+  traitsEl.innerHTML = '';
+  d.traits[lang].forEach(function(tr) {
+    var span = document.createElement('span');
+    span.className = 'sc-trait';
+    span.textContent = tr;
+    traitsEl.appendChild(span);
+  });
+  document.getElementById('shareModal').classList.add('open');
+}
+
+function renderCompatSelects() {
+  var types = Object.keys(TYPES);
+  ['compatA','compatB'].forEach(function(id, idx) {
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    var prev = sel.value;
+    sel.innerHTML = '<option value="">' + t('compatPlaceholder') + '</option>';
+    types.forEach(function(code) {
+      var opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = code + ' — ' + TYPES[code].name[lang];
+      sel.appendChild(opt);
+    });
+    if (prev) sel.value = prev;
+    else if (idx === 0) sel.value = 'ENFP';
+    else sel.value = 'INTJ';
+  });
+  calcCompat();
+}
+
+function calcCompat() {
+  var a = document.getElementById('compatA').value;
+  var b = document.getElementById('compatB').value;
+  var result = document.getElementById('compatResult');
+  if (!result) return;
+  if (!a || !b) { result.classList.remove('show'); return; }
+  var score = (COMPAT_SCORES[a] && COMPAT_SCORES[a][b]) || (COMPAT_SCORES[b] && COMPAT_SCORES[b][a]) || 65;
+  var da = TYPES[a];
+  var db = TYPES[b];
+  var level = score >= 85 ? t('compatPerfect') : score >= 70 ? t('compatGood') : score >= 55 ? t('compatOk') : t('compatHard');
+  var color = score >= 85 ? '#FF6B9D' : score >= 70 ? '#9B59F5' : score >= 55 ? '#4ECDC4' : '#FFD93D';
+  var circ = 2 * Math.PI * 45;
+  var dash = (score / 100) * circ;
+  var desc = lang === 'zh'
+    ? (score >= 75 ? a + '和' + b + '是非常互補的組合！往往能激發出彼此最好的一面。' : score >= 55 ? a + '和' + b + '有不少相似之處，只要願意溝通，能建立深厚的連結。' : a + '和' + b + '是挑戰型配對，但差異也是成長的來源，反而可能創造有趣的火花。')
+    : (score >= 75 ? a + ' and ' + b + ' are a highly complementary pair, often bringing out the best in each other.' : score >= 55 ? a + ' and ' + b + ' share similarities. With open communication, this pair can build a strong bond.' : a + ' and ' + b + ' are a challenging match, but differences can spark growth.');
+  result.classList.add('show');
+  result.innerHTML = '<div style="position:relative;width:120px;height:120px;margin:0 auto 1rem">'
+    + '<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="45" fill="none" stroke="#F3F4F6" stroke-width="10"/>'
+    + '<circle cx="60" cy="60" r="45" fill="none" stroke="' + color + '" stroke-width="10" stroke-dasharray="' + dash.toFixed(1) + ' ' + circ.toFixed(1) + '" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg>'
+    + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:' + color + '">' + score + '</div></div>'
+    + '<div style="font-size:1.3rem;font-weight:900;margin-bottom:0.5rem;color:' + color + '">' + level + '</div>'
+    + '<div style="display:flex;gap:1rem;justify-content:center;margin:1rem 0;font-size:1.5rem"><span>' + da.emoji + ' ' + a + '</span><span style="color:var(--muted)">x</span><span>' + db.emoji + ' ' + b + '</span></div>'
+    + '<p style="font-size:0.92rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto">' + desc + '</p>';
+}
+
+function loadStats() {
+  var mock = {ENFP:42,INFP:38,ENFJ:31,INTJ:28,INTP:25,INFJ:24,ENTP:22,ISFJ:35,ISTJ:30,ESTJ:18,ESFJ:20,ESTP:15,ISFP:19,ISTP:16,ENTJ:14,ESFP:23};
+  fetch(STATS_EP + '?action=get')
+    .then(function(r) { return r.json(); })
+    .then(function(data) { if (data && Object.keys(data).length > 0) Object.assign(mock, data); drawStats(mock); })
+    .catch(function() { drawStats(mock); });
+}
+
+function drawStats(data) {
+  var types = Object.keys(data);
+  var vals = types.map(function(tp) { return data[tp]; });
+  var total = vals.reduce(function(a, b) { return a + b; }, 0);
+  var colors = types.map(function(code) { return (TYPES[code] && TYPES[code].color) || '#9B59F5'; });
+  var totalEl = document.getElementById('statsTotal');
+  if (totalEl) totalEl.textContent = t('statsPeople').replace('X', total);
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {labels: types, datasets: [{data: vals, backgroundColor: colors, borderRadius: 8, borderSkipped: false}]},
+    options: {responsive: true, plugins: {legend: {display: false}}, scales: {y: {beginAtZero: true, grid: {color: 'rgba(0,0,0,0.05)'}}, x: {grid: {display: false}}}}
+  });
+  var groups = [
+    {label:'NT', types:['INTJ','INTP','ENTJ','ENTP'], color:'#534AB7'},
+    {label:'NF', types:['INFJ','INFP','ENFJ','ENFP'], color:'#FF6B9D'},
+    {label:'SJ', types:['ISTJ','ISFJ','ESTJ','ESFJ'], color:'#4ECDC4'},
+    {label:'SP', types:['ISTP','ISFP','ESTP','ESFP'], color:'#FFD93D'}
+  ];
+  if (doChart) doChart.destroy();
+  doChart = new Chart(document.getElementById('doChart'), {
+    type: 'doughnut',
+    data: {
+      labels: groups.map(function(g) { return g.label; }),
+      datasets: [{data: groups.map(function(g) { return g.types.reduce(function(s, tp) { return s + (data[tp] || 0); }, 0); }), backgroundColor: groups.map(function(g) { return g.color; }), borderWidth: 0}]
+    },
+    options: {responsive: true, plugins: {legend: {position: 'bottom', labels: {font: {family: 'Nunito', weight: '700'}, padding: 16}}}, cutout: '65%'}
+  });
+}
+
+function recordStat(type) {
+  fetch(STATS_EP, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({type: type})}).catch(function() {});
+}
+
+function buildFormSelect() {
+  var sel = document.getElementById('fMbti');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">--</option>';
+  Object.keys(TYPES).forEach(function(code) {
+    var opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = code + ' — ' + TYPES[code].name[lang];
+    sel.appendChild(opt);
+  });
+}
+
+function submitForm() {
+  var name = document.getElementById('fName').value.trim();
+  var email = document.getElementById('fEmail').value.trim();
+  if (!name || !email) { showToast(t('toastEmpty')); return; }
+  var payload = {name: name, email: email, mbti: document.getElementById('fMbti').value, goal: document.getElementById('fGoal').value, note: document.getElementById('fNote').value, timestamp: new Date().toISOString()};
+  fetch(FORM_EP, {method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)})
+    .then(function() { showToast(t('toastOk')); document.getElementById('fName').value = ''; document.getElementById('fEmail').value = ''; document.getElementById('fNote').value = ''; })
+    .catch(function() { showToast(t('toastErr')); });
+}
 </script>
 </body>
 </html>
