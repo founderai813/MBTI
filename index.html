@@ -741,6 +741,15 @@ footer{
   .result-emoji{font-size:64px;}
   .nav-links a{padding:6px 10px;font-size:13px;}
 }
+
+/* ============ DARK MODE ============ */
+body.dark{--bg:#1A1A2E;--card:#2A2A4A;--text:#F0E8F0;--muted:#A0A0B8;--soft:#2A2A4A;--line:#3A3A5A;}
+body.dark nav{background:rgba(26,26,46,0.9);}
+body.dark .hero-blob{opacity:0.3;}
+
+/* ============ QUIZ SLIDE ANIMATION ============ */
+.quiz-body{animation:slideIn 0.3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
 </style>
 </head>
 <body>
@@ -757,6 +766,7 @@ footer{
     <a id="nav-instructor">關於講師</a>
     <a id="nav-course">課程報名</a>
   </div>
+  <button class="lang-btn" id="darkBtn" style="margin-right:4px">🌙</button>
   <button class="lang-btn" id="langBtn">EN</button>
 </nav>
 
@@ -919,22 +929,22 @@ footer{
 
 <script>
 var TYPES = {
-  INTJ:{name:{zh:'建築師',en:'Architect'},emoji:'🏗',color:'#534AB7',traits:{zh:['獨立','戰略性','決斷','完美主義'],en:['Independent','Strategic','Decisive','Perfectionist']},desc:{zh:'思維縝密、有遠見的策略家，凡事都有計畫',en:'Thoughtful strategists with a vision and a plan for everything'}},
-  INTP:{name:{zh:'邏輯學家',en:'Logician'},emoji:'🔬',color:'#185FA5',traits:{zh:['分析','創新','客觀','探索'],en:['Analytical','Innovative','Objective','Exploratory']},desc:{zh:'充滿求知慾的思想家，熱愛理論與抽象思考',en:'Inquisitive thinkers who love theory and abstract ideas'}},
-  ENTJ:{name:{zh:'指揮官',en:'Commander'},emoji:'👑',color:'#3B6D11',traits:{zh:['領導','果斷','高效','自信'],en:['Leader','Decisive','Efficient','Confident']},desc:{zh:'天生的領導者，充滿魅力，擅長組織規劃',en:'Natural leaders, charismatic and skilled at organizing plans'}},
-  ENTP:{name:{zh:'辯論家',en:'Debater'},emoji:'⚡',color:'#854F0B',traits:{zh:['機智','好辯','創意','大膽'],en:['Witty','Argumentative','Creative','Bold']},desc:{zh:'聰明活潑的思考者，喜歡挑戰一切想法',en:'Smart and curious thinkers who love challenging ideas'}},
-  INFJ:{name:{zh:'提倡者',en:'Advocate'},emoji:'🌿',color:'#0F6E56',traits:{zh:['洞察','理想','共情','堅定'],en:['Insightful','Idealistic','Empathetic','Firm']},desc:{zh:'安靜而神秘，卻能激勵他人的理想主義者',en:'Quiet but inspiring idealists who motivate others'}},
-  INFP:{name:{zh:'調停者',en:'Mediator'},emoji:'🌸',color:'#993556',traits:{zh:['感性','創意','善良','忠誠'],en:['Sensitive','Creative','Kind','Loyal']},desc:{zh:'詩意的靈魂，被內在使命驅動的理想主義者',en:'Poetic souls driven by a deep inner mission'}},
-  ENFJ:{name:{zh:'主人公',en:'Protagonist'},emoji:'🌟',color:'#993C1D',traits:{zh:['魅力','利他','熱情','感染力'],en:['Charismatic','Altruistic','Passionate','Inspiring']},desc:{zh:'充滿魅力、鼓舞人心的天生領袖',en:'Charismatic and inspiring leaders who captivate everyone'}},
-  ENFP:{name:{zh:'活動家',en:'Campaigner'},emoji:'🎪',color:'#D4537E',traits:{zh:['熱情','創意','社交','樂觀'],en:['Enthusiastic','Creative','Sociable','Optimistic']},desc:{zh:'充滿熱情與創造力，熱愛人與可能性',en:'Enthusiastic and creative, who love people and possibilities'}},
-  ISTJ:{name:{zh:'物流師',en:'Logistician'},emoji:'📋',color:'#444441',traits:{zh:['負責','實際','有條理','可靠'],en:['Responsible','Practical','Organized','Reliable']},desc:{zh:'務實可靠的完成者，維護傳統與秩序',en:'Practical and reliable, dedicated to duty and order'}},
-  ISFJ:{name:{zh:'守衛者',en:'Defender'},emoji:'🛡',color:'#5F5E5A',traits:{zh:['溫暖','細心','忠誠','保護'],en:['Warm','Careful','Loyal','Protective']},desc:{zh:'溫暖而可靠的守護者，默默為他人付出',en:'Warm and reliable protectors who quietly serve others'}},
-  ESTJ:{name:{zh:'總經理',en:'Executive'},emoji:'💼',color:'#2C2C2A',traits:{zh:['組織','果斷','傳統','高效'],en:['Organized','Decisive','Traditional','Efficient']},desc:{zh:'出色的管理者，擅長組織與管理人事',en:'Excellent administrators at organizing people and projects'}},
-  ESFJ:{name:{zh:'執政官',en:'Consul'},emoji:'🤝',color:'#0C447C',traits:{zh:['關懷','合作','忠誠','負責'],en:['Caring','Cooperative','Loyal','Responsible']},desc:{zh:'非常有愛心，喜歡幫助周圍的人',en:'Caring and loyal, always eager to help those around them'}},
-  ISTP:{name:{zh:'鑑賞家',en:'Virtuoso'},emoji:'🔧',color:'#633806',traits:{zh:['實際','觀察力','冷靜','靈活'],en:['Practical','Observant','Calm','Flexible']},desc:{zh:'大膽且實際的實驗者，喜歡動手嘗試',en:'Bold and practical experimenters who love to try things'}},
-  ISFP:{name:{zh:'探險家',en:'Adventurer'},emoji:'🎨',color:'#72243E',traits:{zh:['藝術','隨性','感性','獨立'],en:['Artistic','Spontaneous','Sensitive','Independent']},desc:{zh:'靈活迷人的藝術家，隨時準備探索',en:'Flexible and charming artists, always ready to explore'}},
-  ESTP:{name:{zh:'企業家',en:'Entrepreneur'},emoji:'🚀',color:'#993C1D',traits:{zh:['行動力','魅力','冒險','機智'],en:['Action','Charismatic','Adventurous','Clever']},desc:{zh:'精明活潑的行動派，喜歡生活在邊緣',en:'Smart and energetic risk-takers who live on the edge'}},
-  ESFP:{name:{zh:'表演者',en:'Entertainer'},emoji:'🎭',color:'#72243E',traits:{zh:['活力','即興','娛樂','熱情'],en:['Energetic','Spontaneous','Fun','Enthusiastic']},desc:{zh:'充滿活力、喜歡娛樂他人的自發性人格',en:'Spontaneous, energetic and enthusiastic entertainers'}}
+  INTJ:{name:{zh:'建築師',en:'Architect'},emoji:'🏗',color:'#534AB7',traits:{zh:['獨立','戰略性','決斷','完美主義'],en:['Independent','Strategic','Decisive','Perfectionist']},desc:{zh:'思維縝密、有遠見的策略家，凡事都有計畫',en:'Thoughtful strategists with a vision and a plan for everything'},careers:{zh:['策略顧問','科學家','軟體工程師'],en:['Strategic Consultant','Scientist','Software Engineer']},celebs:['Elon Musk','Christopher Nolan'],comTips:{zh:'給他們空間思考，直接切入重點，避免冗長的閒聊。',en:'Give them space to think, get to the point, and avoid lengthy small talk.'}},
+  INTP:{name:{zh:'邏輯學家',en:'Logician'},emoji:'🔬',color:'#185FA5',traits:{zh:['分析','創新','客觀','探索'],en:['Analytical','Innovative','Objective','Exploratory']},desc:{zh:'充滿求知慾的思想家，熱愛理論與抽象思考',en:'Inquisitive thinkers who love theory and abstract ideas'},careers:{zh:['研究員','程式設計師','哲學家'],en:['Researcher','Programmer','Philosopher']},celebs:['Albert Einstein','Bill Gates'],comTips:{zh:'用邏輯和數據跟他們溝通，尊重他們需要獨處的時間。',en:'Communicate with logic and data, and respect their need for alone time.'}},
+  ENTJ:{name:{zh:'指揮官',en:'Commander'},emoji:'👑',color:'#3B6D11',traits:{zh:['領導','果斷','高效','自信'],en:['Leader','Decisive','Efficient','Confident']},desc:{zh:'天生的領導者，充滿魅力，擅長組織規劃',en:'Natural leaders, charismatic and skilled at organizing plans'},careers:{zh:['CEO','律師','管理顧問'],en:['CEO','Lawyer','Management Consultant']},celebs:['Steve Jobs','Margaret Thatcher'],comTips:{zh:'展現你的能力和效率，準備好清晰的方案再來討論。',en:'Show your competence and efficiency, come prepared with a clear plan.'}},
+  ENTP:{name:{zh:'辯論家',en:'Debater'},emoji:'⚡',color:'#854F0B',traits:{zh:['機智','好辯','創意','大膽'],en:['Witty','Argumentative','Creative','Bold']},desc:{zh:'聰明活潑的思考者，喜歡挑戰一切想法',en:'Smart and curious thinkers who love challenging ideas'},careers:{zh:['創業家','行銷策略師','發明家'],en:['Entrepreneur','Marketing Strategist','Inventor']},celebs:['Mark Twain','Thomas Edison'],comTips:{zh:'跟上他們的思路跳躍，享受辯論但別放在心上。',en:'Keep up with their leaps of thought, enjoy debates but do not take them personally.'}},
+  INFJ:{name:{zh:'提倡者',en:'Advocate'},emoji:'🌿',color:'#0F6E56',traits:{zh:['洞察','理想','共情','堅定'],en:['Insightful','Idealistic','Empathetic','Firm']},desc:{zh:'安靜而神秘，卻能激勵他人的理想主義者',en:'Quiet but inspiring idealists who motivate others'},careers:{zh:['心理諮商師','作家','社工'],en:['Counselor','Writer','Social Worker']},celebs:['Martin Luther King Jr','Lady Gaga'],comTips:{zh:'真誠地分享你的感受，他們能看穿表面的客套。',en:'Share your feelings sincerely — they can see through superficial politeness.'}},
+  INFP:{name:{zh:'調停者',en:'Mediator'},emoji:'🌸',color:'#993556',traits:{zh:['感性','創意','善良','忠誠'],en:['Sensitive','Creative','Kind','Loyal']},desc:{zh:'詩意的靈魂，被內在使命驅動的理想主義者',en:'Poetic souls driven by a deep inner mission'},careers:{zh:['作家','心理師','藝術家'],en:['Writer','Psychologist','Artist']},celebs:['William Shakespeare','J.R.R. Tolkien'],comTips:{zh:'溫柔地表達你的想法，避免過於直接的批評。',en:'Express your thoughts gently and avoid overly direct criticism.'}},
+  ENFJ:{name:{zh:'主人公',en:'Protagonist'},emoji:'🌟',color:'#993C1D',traits:{zh:['魅力','利他','熱情','感染力'],en:['Charismatic','Altruistic','Passionate','Inspiring']},desc:{zh:'充滿魅力、鼓舞人心的天生領袖',en:'Charismatic and inspiring leaders who captivate everyone'},careers:{zh:['教師','人資','非營利組織'],en:['Teacher','HR Manager','Nonprofit Leader']},celebs:['Barack Obama','Oprah Winfrey'],comTips:{zh:'表達對他們付出的感謝，他們會更加投入。',en:'Show appreciation for their efforts and they will invest even more.'}},
+  ENFP:{name:{zh:'活動家',en:'Campaigner'},emoji:'🎪',color:'#D4537E',traits:{zh:['熱情','創意','社交','樂觀'],en:['Enthusiastic','Creative','Sociable','Optimistic']},desc:{zh:'充滿熱情與創造力，熱愛人與可能性',en:'Enthusiastic and creative, who love people and possibilities'},careers:{zh:['記者','創意總監','演員'],en:['Journalist','Creative Director','Actor']},celebs:['Robin Williams','Robert Downey Jr'],comTips:{zh:'給他們表達想法的空間，不要過早否定他們的點子。',en:'Give them room to express ideas and avoid shutting down their brainstorms too early.'}},
+  ISTJ:{name:{zh:'物流師',en:'Logistician'},emoji:'📋',color:'#444441',traits:{zh:['負責','實際','有條理','可靠'],en:['Responsible','Practical','Organized','Reliable']},desc:{zh:'務實可靠的完成者，維護傳統與秩序',en:'Practical and reliable, dedicated to duty and order'},careers:{zh:['會計師','法官','軍官'],en:['Accountant','Judge','Military Officer']},celebs:['Warren Buffett','Angela Merkel'],comTips:{zh:'用事實說話，遵守承諾，他們最重視誠信。',en:'Speak with facts, keep your promises — they value integrity above all.'}},
+  ISFJ:{name:{zh:'守衛者',en:'Defender'},emoji:'🛡',color:'#5F5E5A',traits:{zh:['溫暖','細心','忠誠','保護'],en:['Warm','Careful','Loyal','Protective']},desc:{zh:'溫暖而可靠的守護者，默默為他人付出',en:'Warm and reliable protectors who quietly serve others'},careers:{zh:['護理師','行政管理','圖書館員'],en:['Nurse','Administrative Manager','Librarian']},celebs:['Beyonce','Queen Elizabeth II'],comTips:{zh:'記得主動關心他們的感受，因為他們不太會主動表達需求。',en:'Proactively ask about their feelings — they rarely voice their own needs.'}},
+  ESTJ:{name:{zh:'總經理',en:'Executive'},emoji:'💼',color:'#2C2C2A',traits:{zh:['組織','果斷','傳統','高效'],en:['Organized','Decisive','Traditional','Efficient']},desc:{zh:'出色的管理者，擅長組織與管理人事',en:'Excellent administrators at organizing people and projects'},careers:{zh:['專案經理','銀行家','校長'],en:['Project Manager','Banker','School Principal']},celebs:['Judge Judy','Sonia Sotomayor'],comTips:{zh:'準時、有條理地呈現你的想法，他們討厭模糊的說法。',en:'Be punctual and organized in presenting your ideas — they dislike vague statements.'}},
+  ESFJ:{name:{zh:'執政官',en:'Consul'},emoji:'🤝',color:'#0C447C',traits:{zh:['關懷','合作','忠誠','負責'],en:['Caring','Cooperative','Loyal','Responsible']},desc:{zh:'非常有愛心，喜歡幫助周圍的人',en:'Caring and loyal, always eager to help those around them'},careers:{zh:['教師','醫護人員','社區經理'],en:['Teacher','Healthcare Worker','Community Manager']},celebs:['Taylor Swift','Jennifer Garner'],comTips:{zh:'多給予正面回饋和感謝，社交互動對他們很重要。',en:'Give positive feedback and gratitude — social interaction matters greatly to them.'}},
+  ISTP:{name:{zh:'鑑賞家',en:'Virtuoso'},emoji:'🔧',color:'#633806',traits:{zh:['實際','觀察力','冷靜','靈活'],en:['Practical','Observant','Calm','Flexible']},desc:{zh:'大膽且實際的實驗者，喜歡動手嘗試',en:'Bold and practical experimenters who love to try things'},careers:{zh:['工程師','機師','外科醫師'],en:['Engineer','Pilot','Surgeon']},celebs:['Bear Grylls','Clint Eastwood'],comTips:{zh:'簡短明瞭地溝通，別過度分析他們的情緒。',en:'Keep communication brief and clear — do not over-analyze their emotions.'}},
+  ISFP:{name:{zh:'探險家',en:'Adventurer'},emoji:'🎨',color:'#72243E',traits:{zh:['藝術','隨性','感性','獨立'],en:['Artistic','Spontaneous','Sensitive','Independent']},desc:{zh:'靈活迷人的藝術家，隨時準備探索',en:'Flexible and charming artists, always ready to explore'},careers:{zh:['設計師','攝影師','花藝師'],en:['Designer','Photographer','Florist']},celebs:['Bob Ross','Lana Del Rey'],comTips:{zh:'尊重他們的個人空間和美感，用行動而非言語表達關心。',en:'Respect their personal space and aesthetics — show care through actions, not words.'}},
+  ESTP:{name:{zh:'企業家',en:'Entrepreneur'},emoji:'🚀',color:'#993C1D',traits:{zh:['行動力','魅力','冒險','機智'],en:['Action','Charismatic','Adventurous','Clever']},desc:{zh:'精明活潑的行動派，喜歡生活在邊緣',en:'Smart and energetic risk-takers who live on the edge'},careers:{zh:['業務','企業家','運動員'],en:['Sales Executive','Entrepreneur','Athlete']},celebs:['Donald Trump','Madonna'],comTips:{zh:'跟上他們的步調，多體驗少說教。',en:'Keep up with their pace — focus on experiences rather than lectures.'}},
+  ESFP:{name:{zh:'表演者',en:'Entertainer'},emoji:'🎭',color:'#72243E',traits:{zh:['活力','即興','娛樂','熱情'],en:['Energetic','Spontaneous','Fun','Enthusiastic']},desc:{zh:'充滿活力、喜歡娛樂他人的自發性人格',en:'Spontaneous, energetic and enthusiastic entertainers'},careers:{zh:['演員','導遊','活動企劃'],en:['Actor','Tour Guide','Event Planner']},celebs:['Marilyn Monroe','Jamie Oliver'],comTips:{zh:'跟他們一起享受當下，別太嚴肅，用輕鬆的方式溝通。',en:'Enjoy the moment with them — keep things light and communicate with a relaxed tone.'}}
 };
 
 var DIMS = [
@@ -1048,6 +1058,29 @@ var GEMINI_EP = WORKER_URL + '/gemini';
 var STATS_EP = WORKER_URL + '/mbti-stats';
 var FORM_EP = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 
+var QS_EXTRA = [
+  {dim:'EI',cat:{zh:'能量來源 E/I',en:'Energy Source E/I'},q:{zh:'朋友突然取消約會，你的反應？',en:'A friend suddenly cancels plans. Your reaction?'},opts:[{zh:'馬上找其他人出去',en:'Immediately find someone else to hang out with',e:'E'},{zh:'太好了，可以在家休息',en:'Great, I can rest at home',e:'I'}]},
+  {dim:'EI',cat:{zh:'能量來源 E/I',en:'Energy Source E/I'},q:{zh:'在派對上你通常？',en:'At a party, you usually...'},opts:[{zh:'到處認識新朋友',en:'Mingle and meet new people',e:'E'},{zh:'跟認識的人聊天就好',en:'Stick with people I already know',e:'I'}]},
+  {dim:'EI',cat:{zh:'能量來源 E/I',en:'Energy Source E/I'},q:{zh:'你的充電方式是？',en:'How do you recharge?'},opts:[{zh:'出門走走、找朋友',en:'Go out, meet friends',e:'E'},{zh:'在家追劇、看書',en:'Stay home, watch shows, read',e:'I'}]},
+  {dim:'EI',cat:{zh:'能量來源 E/I',en:'Energy Source E/I'},q:{zh:'週末偏好？',en:'Weekend preference?'},opts:[{zh:'約朋友出去玩',en:'Make plans with friends',e:'E'},{zh:'自己一個人待著',en:'Spend time alone',e:'I'}]},
+  {dim:'EI',cat:{zh:'能量來源 E/I',en:'Energy Source E/I'},q:{zh:'到新環境你的適應方式？',en:'How do you adapt to a new environment?'},opts:[{zh:'很快就能融入大家',en:'I blend in quickly',e:'E'},{zh:'需要時間觀察再慢慢加入',en:'I need time to observe before joining',e:'I'}]},
+  {dim:'SN',cat:{zh:'資訊輸入 S/N',en:'Information Input S/N'},q:{zh:'你的閱讀偏好？',en:'Your reading preference?'},opts:[{zh:'實用工具書、操作手冊',en:'Practical guides and manuals',e:'S'},{zh:'科幻小說、哲學書籍',en:'Sci-fi novels and philosophy books',e:'N'}]},
+  {dim:'SN',cat:{zh:'資訊輸入 S/N',en:'Information Input S/N'},q:{zh:'你描述事情的方式？',en:'How do you describe things?'},opts:[{zh:'用具體細節和數字',en:'With specific details and numbers',e:'S'},{zh:'用比喻和抽象概念',en:'With metaphors and abstract concepts',e:'N'}]},
+  {dim:'SN',cat:{zh:'資訊輸入 S/N',en:'Information Input S/N'},q:{zh:'旅行回來最記得什麼？',en:'What do you remember most from a trip?'},opts:[{zh:'食物、景點、具體的細節',en:'Food, landmarks, specific details',e:'S'},{zh:'整體的感受和氛圍',en:'The overall feeling and atmosphere',e:'N'}]},
+  {dim:'SN',cat:{zh:'資訊輸入 S/N',en:'Information Input S/N'},q:{zh:'遇到問題你傾向？',en:'When facing a problem, you tend to...'},opts:[{zh:'參考過去經驗找解法',en:'Refer to past experience for solutions',e:'S'},{zh:'想出創新的方法',en:'Come up with innovative approaches',e:'N'}]},
+  {dim:'SN',cat:{zh:'資訊輸入 S/N',en:'Information Input S/N'},q:{zh:'做菜的方式？',en:'How do you cook?'},opts:[{zh:'嚴格按照食譜步驟',en:'Follow the recipe strictly',e:'S'},{zh:'隨意創作、自己調味',en:'Freestyle and improvise seasoning',e:'N'}]},
+  {dim:'TF',cat:{zh:'決策方式 T/F',en:'Decision Making T/F'},q:{zh:'朋友跟你抱怨工作，你會？',en:'A friend complains about work. You...'},opts:[{zh:'分析問題然後給建議',en:'Analyze the problem and give advice',e:'T'},{zh:'先陪伴傾聽，讓他發洩',en:'Listen and be there for them first',e:'F'}]},
+  {dim:'TF',cat:{zh:'決策方式 T/F',en:'Decision Making T/F'},q:{zh:'看電影會哭嗎？',en:'Do you cry during movies?'},opts:[{zh:'很少，除非劇情真的很震撼',en:'Rarely, unless the plot is truly shocking',e:'T'},{zh:'常常，容易被感動',en:'Often, I get moved easily',e:'F'}]},
+  {dim:'TF',cat:{zh:'決策方式 T/F',en:'Decision Making T/F'},q:{zh:'做決定時你主要考量？',en:'What matters most when making decisions?'},opts:[{zh:'利弊分析、邏輯推演',en:'Pros-cons analysis and logical reasoning',e:'T'},{zh:'跟著感覺走、內心的聲音',en:'Follow my gut feeling and inner voice',e:'F'}]},
+  {dim:'TF',cat:{zh:'決策方式 T/F',en:'Decision Making T/F'},q:{zh:'你會直接批評別人嗎？',en:'Do you criticize others directly?'},opts:[{zh:'會，直接說問題在哪',en:'Yes, I point out the issue directly',e:'T'},{zh:'會委婉地表達，怕傷害對方',en:'I soften my words to avoid hurting them',e:'F'}]},
+  {dim:'TF',cat:{zh:'決策方式 T/F',en:'Decision Making T/F'},q:{zh:'選禮物的方式？',en:'How do you choose gifts?'},opts:[{zh:'看實用性和品質',en:'Based on practicality and quality',e:'T'},{zh:'看心意和能不能感動對方',en:'Based on sentiment and emotional impact',e:'F'}]},
+  {dim:'JP',cat:{zh:'生活方式 J/P',en:'Lifestyle J/P'},q:{zh:'你的桌面整齊嗎？',en:'Is your desk tidy?'},opts:[{zh:'是的，東西都有固定位置',en:'Yes, everything has its place',e:'J'},{zh:'有點亂，但我找得到東西',en:'A bit messy, but I can find things',e:'P'}]},
+  {dim:'JP',cat:{zh:'生活方式 J/P',en:'Lifestyle J/P'},q:{zh:'約會遲到的頻率？',en:'How often are you late for dates?'},opts:[{zh:'很少，我通常會提早到',en:'Rarely, I usually arrive early',e:'J'},{zh:'偶爾會遲到一下',en:'I am late occasionally',e:'P'}]},
+  {dim:'JP',cat:{zh:'生活方式 J/P',en:'Lifestyle J/P'},q:{zh:'旅行前打包行李？',en:'How do you pack for a trip?'},opts:[{zh:'提前列清單，有條理地準備',en:'Make a list ahead of time, pack systematically',e:'J'},{zh:'出發前一天才匆忙塞行李',en:'Throw things in the night before',e:'P'}]},
+  {dim:'JP',cat:{zh:'生活方式 J/P',en:'Lifestyle J/P'},q:{zh:'新年計畫的風格？',en:'Your New Year resolution style?'},opts:[{zh:'具體目標和執行時間表',en:'Specific goals with a timeline',e:'J'},{zh:'大概的方向，隨時調整',en:'Rough direction, adjust as I go',e:'P'}]},
+  {dim:'JP',cat:{zh:'生活方式 J/P',en:'Lifestyle J/P'},q:{zh:'朋友突然約你明天出去玩？',en:'A friend suddenly invites you out tomorrow?'},opts:[{zh:'先看一下行程表再決定',en:'Check my schedule first',e:'J'},{zh:'看心情，想去就去',en:'Depends on my mood — if I feel like it, sure',e:'P'}]}
+];
+
 var lang = 'zh';
 var currentSection = 'home';
 var answers = {};
@@ -1055,6 +1088,8 @@ var currentQ = 0;
 var myResult = null;
 var barChart = null;
 var doChart = null;
+var quizMode = 'quick';
+var activeQS = QS;
 
 function t(key) { return T[lang][key] || key; }
 
@@ -1169,8 +1204,8 @@ function renderTypes() {
 function renderQuiz() {
   var wrapper = document.getElementById('quizWrapper');
   if (!wrapper) return;
-  var q = QS[currentQ];
-  var total = QS.length;
+  var q = activeQS[currentQ];
+  var total = activeQS.length;
   var pct = Math.round((currentQ / total) * 100);
   var sel = answers[currentQ];
   var isLast = currentQ === total - 1;
@@ -1178,7 +1213,12 @@ function renderQuiz() {
   for (var i = 0; i < q.opts.length; i++) {
     optsHTML += '<button class="quiz-opt' + (sel === i ? ' selected' : '') + '" data-idx="' + i + '">' + q.opts[i][lang] + '</button>';
   }
-  wrapper.innerHTML = '<div class="quiz-header">'
+  var modeHTML = '<div style="display:flex;gap:8px;margin-bottom:1rem;justify-content:center">'
+    + '<button class="quiz-mode' + (quizMode === 'quick' ? ' active' : '') + '" data-mode="quick" style="padding:8px 18px;border-radius:50px;border:2px solid ' + (quizMode === 'quick' ? '#9B59F5' : '#EEE8F5') + ';background:' + (quizMode === 'quick' ? '#9B59F51A' : 'transparent') + ';font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;color:var(--text)">' + (lang === 'zh' ? '⚡ 快速版 20題' : '⚡ Quick 20Q') + '</button>'
+    + '<button class="quiz-mode' + (quizMode === 'full' ? ' active' : '') + '" data-mode="full" style="padding:8px 18px;border-radius:50px;border:2px solid ' + (quizMode === 'full' ? '#9B59F5' : '#EEE8F5') + ';background:' + (quizMode === 'full' ? '#9B59F51A' : 'transparent') + ';font-weight:700;font-size:0.82rem;cursor:pointer;font-family:inherit;color:var(--text)">' + (lang === 'zh' ? '📋 完整版 40題' : '📋 Full 40Q') + '</button>'
+    + '</div>';
+  wrapper.innerHTML = modeHTML
+    + '<div class="quiz-header">'
     + '<div class="quiz-cat">' + q.cat[lang] + '</div>'
     + '<div style="font-size:1rem;font-weight:800;margin-top:2px">' + (lang === 'zh' ? '第' : 'Q') + (currentQ + 1) + (lang === 'zh' ? '題' : '') + ' / ' + total + '</div>'
     + '<div class="quiz-pbar"><div class="quiz-pfill" style="width:' + pct + '%"></div></div>'
@@ -1192,12 +1232,23 @@ function renderQuiz() {
     + '<button class="quiz-back" id="qBack">' + (currentQ === 0 ? t('restart') : t('back')) + '</button>'
     + '<button class="quiz-next' + (sel !== undefined ? ' on' : '') + '" id="qNext">' + (isLast ? t('finish') : t('next')) + '</button>'
     + '</div>';
+  wrapper.querySelectorAll('.quiz-mode').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var mode = btn.getAttribute('data-mode');
+      if (mode === quizMode) return;
+      quizMode = mode;
+      activeQS = quizMode === 'full' ? QS.concat(QS_EXTRA) : QS;
+      answers = {};
+      currentQ = 0;
+      renderQuiz();
+    });
+  });
   wrapper.querySelectorAll('.quiz-opt').forEach(function(btn) {
     btn.addEventListener('click', function() {
       answers[currentQ] = parseInt(btn.getAttribute('data-idx'));
       renderQuiz();
       setTimeout(function() {
-        if (currentQ < QS.length - 1) {
+        if (currentQ < activeQS.length - 1) {
           currentQ++;
           renderQuiz();
         } else {
@@ -1212,19 +1263,20 @@ function renderQuiz() {
   });
   document.getElementById('qNext').addEventListener('click', function() {
     if (answers[currentQ] === undefined) return;
-    if (currentQ < QS.length - 1) { currentQ++; renderQuiz(); }
+    if (currentQ < activeQS.length - 1) { currentQ++; renderQuiz(); }
     else { calcResult(); }
   });
 }
 
 function calcResult() {
   var sc = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
-  for (var i = 0; i < QS.length; i++) {
+  for (var i = 0; i < activeQS.length; i++) {
     var a = answers[i];
-    if (a !== undefined) sc[QS[i].opts[a].e]++;
+    if (a !== undefined) sc[activeQS[i].opts[a].e]++;
   }
   var type = (sc.E >= sc.I ? 'E' : 'I') + (sc.S >= sc.N ? 'S' : 'N') + (sc.T >= sc.F ? 'T' : 'F') + (sc.J >= sc.P ? 'J' : 'P');
   myResult = {type: type, sc: sc};
+  try { localStorage.setItem('mbtiResult', JSON.stringify({type:type, sc:sc, date:new Date().toISOString()})); } catch(e) {}
   recordStat(type);
   showSection('result');
   renderResult(type, sc);
@@ -1232,7 +1284,7 @@ function calcResult() {
 }
 
 function renderResult(type, sc) {
-  var d = TYPES[type] || {name:{zh:type,en:type},emoji:'🧠',color:'#9B59F5',traits:{zh:[],en:[]},desc:{zh:'',en:''}};
+  var d = TYPES[type] || {name:{zh:type,en:type},emoji:'🧠',color:'#9B59F5',traits:{zh:[],en:[]},desc:{zh:'',en:''},careers:{zh:[],en:[]},celebs:[],comTips:{zh:'',en:''}};
   var pE = Math.round(sc.E / (sc.E + sc.I) * 100);
   var pS = Math.round(sc.S / (sc.S + sc.N) * 100);
   var pT = Math.round(sc.T / (sc.T + sc.F) * 100);
@@ -1250,6 +1302,19 @@ function renderResult(type, sc) {
   for (var i = 0; i < d.traits[lang].length; i++) {
     traitsHTML += '<span style="padding:6px 16px;border-radius:999px;font-size:0.82rem;font-weight:800;background:' + d.color + '1A;color:' + d.color + '">' + d.traits[lang][i] + '</span>';
   }
+  var careersHTML = '';
+  if (d.careers && d.careers[lang]) {
+    for (var i = 0; i < d.careers[lang].length; i++) {
+      careersHTML += '<span style="padding:6px 16px;border-radius:999px;font-size:0.82rem;font-weight:800;background:#4ECDC41A;color:#4ECDC4">' + d.careers[lang][i] + '</span>';
+    }
+  }
+  var celebsHTML = '';
+  if (d.celebs) {
+    for (var i = 0; i < d.celebs.length; i++) {
+      celebsHTML += '<span style="padding:6px 16px;border-radius:999px;font-size:0.82rem;font-weight:800;background:#FFD93D1A;color:#B8860B">' + d.celebs[i] + '</span>';
+    }
+  }
+  var comTipText = (d.comTips && d.comTips[lang]) ? d.comTips[lang] : '';
   document.getElementById('resultWrap').innerHTML =
     '<div style="display:inline-flex;align-items:center;gap:12px;padding:1rem 2rem;border-radius:20px;font-size:2rem;font-weight:900;margin-bottom:1.5rem;color:white;background:linear-gradient(135deg,' + d.color + ',' + d.color + '99)">'
     + '<span style="font-size:2.5rem">' + d.emoji + '</span>'
@@ -1257,15 +1322,26 @@ function renderResult(type, sc) {
     + '<p style="color:var(--muted);font-size:0.95rem;line-height:1.7;margin-bottom:1rem">' + d.desc[lang] + '</p>'
     + '<div style="margin:2rem 0">' + barsHTML + '</div>'
     + '<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:1.5rem 0">' + traitsHTML + '</div>'
+    + (careersHTML ? '<div style="margin:1.5rem 0;text-align:center"><div style="font-size:0.9rem;font-weight:800;margin-bottom:0.5rem">' + (lang === 'zh' ? '💼 適合職業' : '💼 Suitable Careers') + '</div><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + careersHTML + '</div></div>' : '')
+    + (celebsHTML ? '<div style="margin:1rem 0;text-align:center"><div style="font-size:0.9rem;font-weight:800;margin-bottom:0.5rem">' + (lang === 'zh' ? '⭐ 同型名人' : '⭐ Famous People') + '</div><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' + celebsHTML + '</div></div>' : '')
+    + (comTipText ? '<div style="margin:1rem 0;text-align:center"><div style="font-size:0.9rem;font-weight:800;margin-bottom:0.5rem">' + (lang === 'zh' ? '💬 溝通秘訣' : '💬 Communication Tips') + '</div><p style="font-size:0.88rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto">' + comTipText + '</p></div>' : '')
     + '<div style="background:linear-gradient(135deg,rgba(155,89,245,0.06),rgba(255,107,157,0.06));border:2px solid rgba(155,89,245,0.2);border-radius:12px;padding:1.25rem;text-align:left;margin:1.5rem 0" id="aiBox">'
     + '<div style="font-size:0.78rem;font-weight:800;color:#9B59F5;margin-bottom:0.5rem">' + t('aiLabel') + '</div>'
     + '<div id="aiContent" style="font-size:0.9rem;line-height:1.7;color:var(--muted);font-style:italic">' + t('aiLoading') + '</div></div>'
     + '<button id="shareResultBtn" style="width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#FF6B9D,#9B59F5);color:white;font-size:1rem;font-weight:800;cursor:pointer;margin-top:1rem;font-family:inherit">' + t('shareBtn') + '</button>'
-    + '<button id="retryBtn" style="width:100%;padding:12px;border-radius:12px;border:2.5px solid #9B59F5;background:transparent;color:#9B59F5;font-size:0.95rem;font-weight:800;cursor:pointer;margin-top:0.75rem;font-family:inherit">' + t('retryBtn') + '</button>';
+    + '<button id="retryBtn" style="width:100%;padding:12px;border-radius:12px;border:2.5px solid #9B59F5;background:transparent;color:#9B59F5;font-size:0.95rem;font-weight:800;cursor:pointer;margin-top:0.75rem;font-family:inherit">' + t('retryBtn') + '</button>'
+    + '<a href="https://line.me/R/ti/p/@queque-mbti" target="_blank" rel="noopener" style="display:block;width:100%;padding:12px;border-radius:12px;background:#06C755;color:white;font-size:0.95rem;font-weight:800;text-align:center;margin-top:0.75rem;text-decoration:none;font-family:inherit">💬 ' + (lang === 'zh' ? '加入雀雀 LINE 獲得完整分析' : 'Join Queque LINE for full analysis') + '</a>'
+    + '<div style="margin-top:1rem;display:flex;gap:8px"><input id="emailResult" type="email" placeholder="' + (lang === 'zh' ? '輸入 Email 收到完整報告' : 'Enter email for full report') + '" style="flex:1;padding:10px 14px;border:2px solid #EEE8F5;border-radius:12px;font-size:0.9rem;font-family:inherit"><button id="sendEmailBtn" style="padding:10px 20px;border-radius:12px;border:none;background:var(--secondary,#9B59F5);color:white;font-weight:800;cursor:pointer;font-family:inherit">📧</button></div>';
   document.getElementById('shareResultBtn').addEventListener('click', function() { openShare(type); });
   document.getElementById('retryBtn').addEventListener('click', function() {
     answers = {}; currentQ = 0; myResult = null;
     showSection('quiz'); renderQuiz();
+  });
+  document.getElementById('sendEmailBtn').addEventListener('click', function() {
+    var em = document.getElementById('emailResult').value.trim();
+    if (!em) return;
+    showToast(lang === 'zh' ? '已記錄！完整報告將寄送至 ' + em : 'Noted! Full report will be sent to ' + em);
+    document.getElementById('emailResult').value = '';
   });
 }
 
@@ -1296,6 +1372,79 @@ function fetchAI(type) {
     });
 }
 
+var shareCanvas = null;
+
+function generateShareCanvas(type, callback) {
+  var d = TYPES[type] || {name:{zh:type,en:type},emoji:'🧠',traits:{zh:[],en:[]},desc:{zh:'',en:''},color:'#9B59F5'};
+  var canvas = document.createElement('canvas');
+  canvas.width = 600;
+  canvas.height = 800;
+  var ctx = canvas.getContext('2d');
+  var grd = ctx.createLinearGradient(0, 0, 600, 800);
+  grd.addColorStop(0, '#FFF9F5');
+  grd.addColorStop(0.5, '#FAF3F8');
+  grd.addColorStop(1, '#F0E8FF');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, 600, 800);
+  var topGrd = ctx.createLinearGradient(0, 0, 600, 0);
+  topGrd.addColorStop(0, '#FF6B9D');
+  topGrd.addColorStop(0.33, '#FFD93D');
+  topGrd.addColorStop(0.66, '#9B59F5');
+  topGrd.addColorStop(1, '#4ECDC4');
+  ctx.fillStyle = topGrd;
+  ctx.fillRect(0, 0, 600, 8);
+  ctx.font = '72px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(d.emoji, 300, 140);
+  ctx.font = 'bold 56px Nunito, sans-serif';
+  ctx.fillStyle = d.color;
+  ctx.fillText(type, 300, 220);
+  ctx.font = 'bold 28px Noto Sans TC, sans-serif';
+  ctx.fillStyle = '#1A1A2E';
+  ctx.fillText(d.name[lang], 300, 270);
+  ctx.font = '16px Noto Sans TC, sans-serif';
+  ctx.fillStyle = '#6E6E85';
+  var descText = d.desc[lang];
+  if (descText.length > 30) descText = descText.substring(0, 30) + '...';
+  ctx.fillText(descText, 300, 310);
+  var traits = d.traits[lang];
+  var traitY = 370;
+  var traitStartX = 300 - ((traits.length * 100 + (traits.length - 1) * 10) / 2);
+  for (var i = 0; i < traits.length; i++) {
+    var tx = traitStartX + i * 110 + 50;
+    ctx.fillStyle = d.color + '2A';
+    ctx.beginPath();
+    ctx.roundRect(tx - 45, traitY - 16, 90, 32, 16);
+    ctx.fill();
+    ctx.font = 'bold 14px Noto Sans TC, sans-serif';
+    ctx.fillStyle = d.color;
+    ctx.fillText(traits[i], tx, traitY + 5);
+  }
+  if (d.careers && d.careers[lang] && d.careers[lang].length > 0) {
+    ctx.font = 'bold 18px Noto Sans TC, sans-serif';
+    ctx.fillStyle = '#1A1A2E';
+    ctx.fillText(lang === 'zh' ? '💼 適合職業' : '💼 Careers', 300, 440);
+    ctx.font = '15px Noto Sans TC, sans-serif';
+    ctx.fillStyle = '#6E6E85';
+    ctx.fillText(d.careers[lang].join(' / '), 300, 470);
+  }
+  if (d.celebs && d.celebs.length > 0) {
+    ctx.font = 'bold 18px Noto Sans TC, sans-serif';
+    ctx.fillStyle = '#1A1A2E';
+    ctx.fillText(lang === 'zh' ? '⭐ 同型名人' : '⭐ Famous', 300, 520);
+    ctx.font = '15px Noto Sans TC, sans-serif';
+    ctx.fillStyle = '#6E6E85';
+    ctx.fillText(d.celebs.join(' / '), 300, 550);
+  }
+  ctx.font = 'bold 16px Noto Sans TC, sans-serif';
+  ctx.fillStyle = '#9B59F5';
+  ctx.fillText('🧠 雀雀認證 MBTI', 300, 730);
+  ctx.font = '12px Nunito, sans-serif';
+  ctx.fillStyle = '#A0A0B8';
+  ctx.fillText('mbti.futurestarai.com', 300, 760);
+  callback(canvas);
+}
+
 function openShare(type) {
   var d = TYPES[type] || {name:{zh:type,en:type},emoji:'🧠',traits:{zh:[],en:[]},desc:{zh:'',en:''}};
   document.getElementById('scType').textContent = type + ' ' + d.emoji;
@@ -1310,6 +1459,9 @@ function openShare(type) {
     traitsEl.appendChild(span);
   });
   document.getElementById('shareModal').classList.add('open');
+  generateShareCanvas(type, function(canvas) {
+    shareCanvas = canvas;
+  });
 }
 
 function renderCompatSelects() {
@@ -1355,7 +1507,11 @@ function calcCompat() {
     + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:' + color + '">' + score + '</div></div>'
     + '<div style="font-size:1.3rem;font-weight:900;margin-bottom:0.5rem;color:' + color + '">' + level + '</div>'
     + '<div style="display:flex;gap:1rem;justify-content:center;margin:1rem 0;font-size:1.5rem"><span>' + da.emoji + ' ' + a + '</span><span style="color:var(--muted)">x</span><span>' + db.emoji + ' ' + b + '</span></div>'
-    + '<p style="font-size:0.92rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto">' + desc + '</p>';
+    + '<p style="font-size:0.92rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto">' + desc + '</p>'
+    + '<div style="margin-top:1.5rem;padding:1rem;background:linear-gradient(135deg,rgba(155,89,245,0.06),rgba(255,107,157,0.06));border-radius:12px;text-align:left;max-width:480px;margin-left:auto;margin-right:auto">'
+    + '<div style="font-size:0.85rem;font-weight:800;margin-bottom:0.5rem">' + (lang === 'zh' ? '💬 溝通建議' : '💬 Communication Advice') + '</div>'
+    + '<p style="font-size:0.88rem;color:var(--muted);line-height:1.7">' + (score >= 75 ? (lang === 'zh' ? '你們天生互補，記得欣賞對方跟你不同的地方，這就是你們的超能力。' : 'You naturally complement each other. Appreciate your differences — that is your superpower.') : score >= 55 ? (lang === 'zh' ? '試著用對方的語言溝通：如果對方是T型，多用邏輯說服；如果是F型，先表達關心。' : 'Try speaking in their language: use logic for T types, show care first for F types.') : (lang === 'zh' ? '挑戰型配對需要更多耐心。試著理解對方的核心需求，不要試圖改變彼此。' : 'Challenging pairs need extra patience. Understand each other\'s core needs instead of trying to change them.')) + '</p>'
+    + '</div>';
 }
 
 function loadStats() {
@@ -1430,6 +1586,53 @@ document.addEventListener('DOMContentLoaded', function() {
   renderCompatSelects();
   buildFormSelect();
 
+  var savedTheme = localStorage.getItem('mbtiTheme');
+  if (savedTheme === 'dark') document.body.classList.add('dark');
+  var darkBtnEl = document.getElementById('darkBtn');
+  if (savedTheme === 'dark') darkBtnEl.textContent = '☀️';
+  darkBtnEl.addEventListener('click', function() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('mbtiTheme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    this.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  });
+
+  try {
+    var saved = localStorage.getItem('mbtiResult');
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      if (parsed && parsed.type && TYPES[parsed.type]) {
+        var savedD = TYPES[parsed.type];
+        var banner = document.createElement('div');
+        banner.style.cssText = 'padding:12px 20px;background:linear-gradient(135deg,rgba(255,107,157,0.1),rgba(155,89,245,0.1));border-radius:16px;text-align:center;margin-bottom:1rem;font-size:0.9rem;font-weight:700;max-width:600px;margin-left:auto;margin-right:auto;';
+        banner.innerHTML = (lang === 'zh' ? '上次你的結果是 ' : 'Your last result was ') + parsed.type + ' ' + savedD.emoji + ' ' + savedD.name[lang] + (lang === 'zh' ? '，要再測一次嗎？' : '. Retake?');
+        var viewBtn = document.createElement('button');
+        viewBtn.style.cssText = 'padding:6px 16px;border-radius:50px;background:linear-gradient(135deg,#FF6B9D,#9B59F5);color:white;font-weight:800;font-size:0.8rem;margin:8px 4px 0;cursor:pointer;border:none;font-family:inherit;';
+        viewBtn.textContent = lang === 'zh' ? '查看結果' : 'View Result';
+        viewBtn.addEventListener('click', function() {
+          myResult = {type: parsed.type, sc: parsed.sc};
+          showSection('result');
+          renderResult(parsed.type, parsed.sc);
+          fetchAI(parsed.type);
+        });
+        var retakeBtn = document.createElement('button');
+        retakeBtn.style.cssText = 'padding:6px 16px;border-radius:50px;border:2px solid #9B59F5;background:transparent;color:#9B59F5;font-weight:800;font-size:0.8rem;margin:8px 4px 0;cursor:pointer;font-family:inherit;';
+        retakeBtn.textContent = lang === 'zh' ? '重新測驗' : 'Retake Quiz';
+        retakeBtn.addEventListener('click', function() {
+          answers = {};
+          currentQ = 0;
+          myResult = null;
+          showSection('quiz');
+          renderQuiz();
+        });
+        banner.appendChild(document.createElement('br'));
+        banner.appendChild(viewBtn);
+        banner.appendChild(retakeBtn);
+        var heroContent = document.querySelector('.hero-content');
+        if (heroContent) heroContent.insertBefore(banner, heroContent.firstChild);
+      }
+    }
+  } catch(e) {}
+
   document.getElementById('langBtn').addEventListener('click', function() {
     lang = lang === 'zh' ? 'en' : 'zh';
     applyLang();
@@ -1451,7 +1654,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('formSubmit').addEventListener('click', submitForm);
 
-  document.getElementById('modalDl').addEventListener('click', function() { showToast(t('toastScreenshot')); });
+  document.getElementById('modalDl').addEventListener('click', function() {
+    if (shareCanvas) {
+      try {
+        shareCanvas.toBlob(function(blob) {
+          if (blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'mbti-result.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+          } else {
+            var dataUrl = shareCanvas.toDataURL('image/png');
+            var a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = 'mbti-result.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+        }, 'image/png');
+      } catch(e) {
+        var dataUrl = shareCanvas.toDataURL('image/png');
+        var a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = 'mbti-result.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    } else {
+      showToast(t('toastScreenshot'));
+    }
+  });
   document.getElementById('modalCl').addEventListener('click', function() { document.getElementById('shareModal').classList.remove('open'); });
   document.getElementById('shareModal').addEventListener('click', function(e) {
     if (e.target === document.getElementById('shareModal')) {
