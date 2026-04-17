@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="MBTI 人格測驗 - 找到專屬於你的 16 型人格，探索內心、理解他人">
-<title>MBTI 人格測驗 ✦ 未來之星</title>
+<title>雀雀認證的MBTI｜了解你的人格密碼</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
+/* ============ VARIABLES ============ */
 :root{
   --primary:#FF6B9D;
   --secondary:#9B59F5;
@@ -19,12 +18,17 @@
   --card:#FFFFFF;
   --text:#1A1A2E;
   --muted:#6E6E85;
-  --shadow:0 10px 30px rgba(155,89,245,0.12);
-  --shadow-lg:0 20px 50px rgba(255,107,157,0.18);
+  --soft:#FAF3F8;
+  --line:#F0E8F0;
   --radius:20px;
   --radius-sm:14px;
   --radius-lg:28px;
+  --shadow-sm:0 4px 14px rgba(155,89,245,0.08);
+  --shadow:0 10px 30px rgba(155,89,245,0.12);
+  --shadow-lg:0 20px 50px rgba(255,107,157,0.18);
 }
+
+/* ============ RESET ============ */
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
@@ -35,118 +39,219 @@ body{
   overflow-x:hidden;
   min-height:100vh;
 }
-button{font-family:inherit;cursor:pointer;border:none;outline:none;}
-a{text-decoration:none;color:inherit;}
+button{font-family:inherit;cursor:pointer;border:none;outline:none;background:none;color:inherit;}
+a{text-decoration:none;color:inherit;cursor:pointer;}
 img{max-width:100%;display:block;}
-.container{max-width:1200px;margin:0 auto;padding:0 24px;}
+input,select,textarea{font-family:inherit;}
 
 /* ============ NAV ============ */
-.nav{
+nav{
   position:sticky;
   top:0;
   z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 28px;
   background:rgba(255,249,245,0.85);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
   border-bottom:1px solid rgba(155,89,245,0.08);
 }
-.nav-inner{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:16px 24px;
-  max-width:1200px;
-  margin:0 auto;
-}
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.nav-logo{
   font-weight:900;
   font-size:22px;
-  cursor:pointer;
-  user-select:none;
-}
-.logo-icon{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
-  box-shadow:0 6px 16px rgba(155,89,245,0.3);
-}
-.logo-text{
   background:linear-gradient(135deg,var(--primary),var(--secondary));
   -webkit-background-clip:text;
   background-clip:text;
   -webkit-text-fill-color:transparent;
+  user-select:none;
 }
-.nav-links{
-  display:flex;
-  gap:6px;
-  align-items:center;
-}
-.nav-link{
+.nav-links{display:flex;gap:4px;flex-wrap:wrap;}
+.nav-links a{
   padding:8px 14px;
   border-radius:12px;
   font-weight:700;
-  font-size:15px;
+  font-size:14px;
   color:var(--text);
   transition:all .2s ease;
-  cursor:pointer;
-  background:transparent;
 }
-.nav-link:hover{background:rgba(155,89,245,0.08);color:var(--secondary);}
-.nav-link.active{background:var(--secondary);color:#fff;}
-.lang-toggle{
+.nav-links a:hover{background:rgba(155,89,245,0.08);color:var(--secondary);}
+.nav-links a.active{background:var(--secondary);color:#fff;}
+.lang-btn{
   padding:8px 16px;
   border-radius:12px;
   background:linear-gradient(135deg,var(--accent),var(--primary));
   color:#fff;
   font-weight:800;
   font-size:13px;
-  margin-left:8px;
   transition:transform .2s ease;
 }
-.lang-toggle:hover{transform:translateY(-2px);}
-.nav-toggle{
-  display:none;
-  padding:8px;
-  border-radius:10px;
-  background:transparent;
-  font-size:22px;
+.lang-btn:hover{transform:translateY(-2px);}
+@media(max-width:900px){
+  nav{flex-wrap:wrap;gap:10px;padding:14px 18px;}
+  .nav-links{order:3;width:100%;justify-content:center;}
 }
-@media(max-width:820px){
-  .nav-links{
-    position:absolute;
-    top:100%;
-    right:16px;
-    flex-direction:column;
-    background:var(--card);
-    padding:16px;
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    min-width:200px;
-    display:none;
-  }
-  .nav-links.open{display:flex;}
-  .nav-toggle{display:block;}
-  .nav-link{width:100%;text-align:left;}
+
+/* ============ HERO ============ */
+#home{
+  position:relative;
+  min-height:calc(100vh - 72px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:60px 24px;
+  overflow:hidden;
+}
+#home.hidden{display:none;}
+.hero-blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(70px);
+  opacity:0.55;
+  animation:blob 18s infinite ease-in-out;
+  z-index:0;
+  pointer-events:none;
+}
+.blob1{
+  width:440px;height:440px;
+  background:var(--primary);
+  top:-100px;left:-80px;
+}
+.blob2{
+  width:380px;height:380px;
+  background:var(--secondary);
+  top:30%;right:-80px;
+  animation-delay:-6s;
+}
+.blob3{
+  width:340px;height:340px;
+  background:var(--accent);
+  bottom:-60px;left:30%;
+  animation-delay:-12s;
+}
+@keyframes blob{
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(40px,-30px) scale(1.1);}
+  66%{transform:translate(-30px,30px) scale(0.92);}
+}
+.hero-content{position:relative;z-index:2;max-width:820px;}
+.hero-badge{
+  display:inline-block;
+  padding:8px 18px;
+  border-radius:50px;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(10px);
+  font-weight:700;
+  font-size:14px;
+  color:var(--secondary);
+  margin-bottom:24px;
+  box-shadow:0 4px 12px rgba(155,89,245,0.1);
+}
+.hero-title{
+  font-size:clamp(38px,6.5vw,72px);
+  font-weight:900;
+  line-height:1.1;
+  margin-bottom:20px;
+  letter-spacing:-1px;
+}
+.highlight{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero-sub{
+  font-size:clamp(16px,2vw,19px);
+  color:var(--muted);
+  margin-bottom:36px;
+  max-width:580px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.hero-btns{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom:50px;
+}
+
+/* ============ BUTTONS ============ */
+.btn-primary{
+  padding:14px 32px;
+  border-radius:50px;
+  font-weight:800;
+  font-size:16px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  box-shadow:0 8px 24px rgba(255,107,157,0.35);
+  transition:all .25s ease;
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(255,107,157,0.45);}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-outline{
+  padding:14px 32px;
+  border-radius:50px;
+  font-weight:800;
+  font-size:16px;
+  background:var(--card);
+  color:var(--text);
+  border:2px solid transparent;
+  box-shadow:var(--shadow-sm);
+  transition:all .25s ease;
+}
+.btn-outline:hover{transform:translateY(-3px);border-color:var(--secondary);color:var(--secondary);}
+.btn-accent{
+  padding:14px 32px;
+  border-radius:50px;
+  font-weight:800;
+  font-size:16px;
+  background:var(--accent);
+  color:var(--text);
+  box-shadow:0 8px 24px rgba(255,217,61,0.4);
+  transition:all .25s ease;
+}
+.btn-accent:hover{transform:translateY(-3px);}
+
+.mbti-pills{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  max-width:760px;
+  margin:0 auto;
+}
+.mbti-pills .pill{
+  padding:8px 16px;
+  border-radius:50px;
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(8px);
+  font-weight:700;
+  font-size:13px;
+  color:var(--text);
+  cursor:pointer;
+  transition:all .2s ease;
+  border:2px solid transparent;
+}
+.mbti-pills .pill:hover{
+  transform:translateY(-3px) scale(1.05);
+  border-color:var(--primary);
+  box-shadow:0 6px 16px rgba(255,107,157,0.2);
 }
 
 /* ============ PAGES ============ */
-.page{display:none;animation:fadeIn .5s ease;}
+.page{display:none;animation:fadeUp .5s ease;}
 .page.active{display:block;}
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(12px);}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px);}
   to{opacity:1;transform:translateY(0);}
 }
-section{padding:80px 0;}
-@media(max-width:640px){section{padding:50px 0;}}
 
+/* ============ SECTION BASE ============ */
+section{padding:80px 24px;}
+.container{max-width:1200px;margin:0 auto;}
 .section-title{
   font-size:clamp(28px,4vw,44px);
   font-weight:900;
@@ -163,186 +268,39 @@ section{padding:80px 0;}
   margin-left:auto;
   margin-right:auto;
 }
-.gradient-text{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  -webkit-background-clip:text;
-  background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
 
-/* ============ HERO ============ */
-.hero{
-  position:relative;
-  min-height:calc(100vh - 72px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:60px 24px;
-  overflow:hidden;
-}
-.blob{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(60px);
-  opacity:0.55;
-  animation:blob 18s infinite ease-in-out;
-  z-index:0;
-}
-.blob-1{
-  width:420px;height:420px;
-  background:var(--primary);
-  top:-80px;left:-80px;
-}
-.blob-2{
-  width:360px;height:360px;
-  background:var(--secondary);
-  top:40%;right:-60px;
-  animation-delay:-6s;
-}
-.blob-3{
-  width:320px;height:320px;
-  background:var(--accent);
-  bottom:-40px;left:30%;
-  animation-delay:-12s;
-}
-.blob-4{
-  width:280px;height:280px;
-  background:var(--teal);
-  top:20%;left:40%;
-  animation-delay:-3s;
-}
-@keyframes blob{
-  0%,100%{transform:translate(0,0) scale(1);}
-  33%{transform:translate(40px,-30px) scale(1.1);}
-  66%{transform:translate(-30px,30px) scale(0.92);}
-}
-.hero-inner{position:relative;z-index:2;max-width:820px;}
-.hero-badge{
-  display:inline-block;
-  padding:8px 18px;
-  border-radius:50px;
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(10px);
-  font-weight:700;
-  font-size:14px;
-  color:var(--secondary);
-  margin-bottom:24px;
-  box-shadow:0 4px 12px rgba(155,89,245,0.1);
-}
-.hero-title{
-  font-size:clamp(36px,6vw,68px);
-  font-weight:900;
-  line-height:1.1;
-  margin-bottom:20px;
-  letter-spacing:-1px;
-}
-.hero-sub{
-  font-size:clamp(16px,2vw,20px);
-  color:var(--muted);
-  margin-bottom:36px;
-  max-width:560px;
-  margin-left:auto;
-  margin-right:auto;
-}
-.cta-group{
-  display:flex;
-  gap:14px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-bottom:50px;
-}
-.btn{
-  padding:14px 32px;
-  border-radius:50px;
-  font-weight:800;
-  font-size:16px;
-  transition:all .25s ease;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-}
-.btn-primary{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:#fff;
-  box-shadow:0 8px 24px rgba(255,107,157,0.35);
-}
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(255,107,157,0.45);}
-.btn-secondary{
-  background:var(--card);
-  color:var(--text);
-  box-shadow:var(--shadow);
-}
-.btn-secondary:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
-.btn-accent{
-  background:var(--accent);
-  color:var(--text);
-  box-shadow:0 8px 24px rgba(255,217,61,0.4);
-}
-.btn-accent:hover{transform:translateY(-3px);}
-.btn-ghost{
-  background:transparent;
-  color:var(--secondary);
-  border:2px solid var(--secondary);
-}
-.btn-ghost:hover{background:var(--secondary);color:#fff;}
-
-.pill-grid{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-  max-width:760px;
-  margin:0 auto;
-}
-.pill{
-  padding:8px 16px;
-  border-radius:50px;
-  background:rgba(255,255,255,0.8);
-  backdrop-filter:blur(8px);
-  font-weight:700;
-  font-size:13px;
-  color:var(--text);
-  cursor:pointer;
-  transition:all .2s ease;
-  border:2px solid transparent;
-}
-.pill:hover{
-  transform:translateY(-3px) scale(1.05);
-  border-color:var(--primary);
-  box-shadow:0 6px 16px rgba(255,107,157,0.2);
-}
-
-/* ============ INTRO ============ */
+/* ============ DIM CARDS (四維度) ============ */
 .dim-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   gap:24px;
-  margin:40px 0 80px;
+  margin-bottom:80px;
 }
 .dim-card{
   background:var(--card);
   border-radius:var(--radius);
-  padding:30px 24px;
+  padding:32px 24px;
   box-shadow:var(--shadow);
   text-align:center;
   transition:transform .3s ease, box-shadow .3s ease;
 }
 .dim-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
-.dim-emoji{font-size:42px;margin-bottom:12px;}
+.dim-emoji{font-size:44px;margin-bottom:14px;}
 .dim-title{font-weight:900;font-size:20px;margin-bottom:6px;}
-.dim-sub{color:var(--muted);font-size:14px;margin-bottom:16px;}
-.dim-pair{display:flex;gap:10px;justify-content:center;}
+.dim-sub{color:var(--muted);font-size:14px;margin-bottom:18px;}
+.dim-letters{display:flex;gap:10px;justify-content:center;}
 .dim-letter{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:#fff;
   padding:6px 16px;
   border-radius:20px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
   font-weight:800;
-  font-size:13px;
+  font-size:14px;
 }
 .dim-letter.alt{background:linear-gradient(135deg,var(--accent),var(--teal));color:var(--text);}
-.types-grid{
+
+/* ============ 16型 TYPE CARDS ============ */
+.type-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
   gap:18px;
@@ -355,20 +313,16 @@ section{padding:80px 0;}
   cursor:pointer;
   transition:transform .3s ease, box-shadow .3s ease;
   border-top:5px solid var(--primary);
+  text-align:center;
 }
 .type-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
 .type-emoji{font-size:38px;margin-bottom:10px;}
-.type-code{
-  font-weight:900;
-  font-size:22px;
-  letter-spacing:2px;
-  margin-bottom:4px;
-}
+.type-code{font-weight:900;font-size:22px;letter-spacing:2px;margin-bottom:4px;}
 .type-name{color:var(--muted);font-weight:700;font-size:14px;margin-bottom:12px;}
 .type-desc{font-size:13px;color:var(--text);line-height:1.5;}
 
 /* ============ QUIZ ============ */
-.quiz-card{
+.quiz-wrapper{
   background:var(--card);
   border-radius:var(--radius-lg);
   padding:44px 40px;
@@ -376,9 +330,8 @@ section{padding:80px 0;}
   max-width:720px;
   margin:0 auto;
 }
-@media(max-width:640px){.quiz-card{padding:28px 22px;}}
-.progress-wrap{margin-bottom:32px;}
-.progress-header{
+.quiz-header{margin-bottom:32px;}
+.quiz-meta{
   display:flex;
   justify-content:space-between;
   font-weight:700;
@@ -386,28 +339,28 @@ section{padding:80px 0;}
   color:var(--muted);
   margin-bottom:10px;
 }
-.progress-bar{
+.quiz-progress{
   height:8px;
-  background:#F0EDF5;
+  background:var(--line);
   border-radius:50px;
   overflow:hidden;
 }
-.progress-fill{
+.quiz-progress-fill{
   height:100%;
   background:linear-gradient(90deg,var(--primary),var(--secondary));
   border-radius:50px;
   transition:width .5s ease;
 }
-.quiz-q{
+.quiz-question{
   font-weight:800;
   font-size:22px;
   margin-bottom:26px;
   line-height:1.5;
 }
-.opts-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;}
-.opt{
+.quiz-opts{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;}
+.quiz-opt{
   padding:18px 22px;
-  background:#FAF7FE;
+  background:var(--soft);
   border-radius:var(--radius);
   cursor:pointer;
   transition:all .2s ease;
@@ -417,17 +370,14 @@ section{padding:80px 0;}
   font-size:16px;
   color:var(--text);
   width:100%;
-  font-family:inherit;
   line-height:1.5;
 }
-.opt:hover{background:#F3EEFB;transform:translateX(4px);}
-.opt.selected{
+.quiz-opt:hover{background:#F3EEFB;transform:translateX(4px);}
+.quiz-opt.selected{
   background:linear-gradient(135deg,rgba(255,107,157,0.14),rgba(155,89,245,0.14));
   border-color:var(--secondary);
 }
 .quiz-actions{display:flex;justify-content:space-between;gap:12px;}
-.quiz-actions .btn{padding:12px 28px;font-size:15px;}
-.quiz-actions .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
 
 /* ============ RESULT ============ */
 .result-wrap{max-width:820px;margin:0 auto;}
@@ -452,15 +402,15 @@ section{padding:80px 0;}
   font-weight:900;
   font-size:56px;
   letter-spacing:4px;
+  margin-bottom:10px;
   background:linear-gradient(135deg,var(--primary),var(--secondary));
   -webkit-background-clip:text;
   background-clip:text;
   -webkit-text-fill-color:transparent;
-  margin-bottom:10px;
 }
 .result-name{font-weight:800;font-size:24px;margin-bottom:6px;}
 .result-name-en{color:var(--muted);font-size:15px;margin-bottom:22px;}
-.traits-wrap{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.result-traits{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
 .trait-pill{
   padding:6px 14px;
   background:rgba(255,107,157,0.12);
@@ -469,38 +419,49 @@ section{padding:80px 0;}
   font-weight:700;
   font-size:13px;
 }
-.dim-bars{
+.result-desc{
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.8;
+  margin-top:14px;
+  max-width:540px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.result-bars{
   background:var(--card);
   border-radius:var(--radius);
   padding:30px;
   box-shadow:var(--shadow);
   margin-bottom:24px;
 }
-.dim-bars h3{font-weight:800;font-size:18px;margin-bottom:20px;text-align:center;}
-.bar-row{margin-bottom:18px;}
-.bar-row:last-child{margin-bottom:0;}
-.bar-labels{
+.result-bars h3{font-weight:800;font-size:18px;margin-bottom:20px;text-align:center;}
+.rbar{margin-bottom:18px;}
+.rbar:last-child{margin-bottom:0;}
+.rbar-labels{
   display:flex;
   justify-content:space-between;
   font-weight:700;
   font-size:14px;
   margin-bottom:6px;
 }
-.bar-track{
+.rbar-track{
   height:12px;
-  background:#F0EDF5;
+  background:var(--line);
   border-radius:50px;
   overflow:hidden;
   display:flex;
 }
-.bar-left{
+.rbar-left{
   background:linear-gradient(90deg,var(--primary),var(--secondary));
-  transition:width .8s ease;
+  transition:width .9s ease;
 }
-.bar-right{
+.rbar-right{
   background:linear-gradient(90deg,var(--teal),var(--accent));
-  transition:width .8s ease;
+  transition:width .9s ease;
 }
+
 .ai-box{
   background:linear-gradient(135deg,rgba(255,107,157,0.08),rgba(155,89,245,0.08));
   border-radius:var(--radius);
@@ -516,12 +477,7 @@ section{padding:80px 0;}
   letter-spacing:2px;
   text-transform:uppercase;
 }
-.ai-text{
-  font-size:16px;
-  line-height:1.9;
-  color:var(--text);
-  min-height:60px;
-}
+.ai-text{font-size:16px;line-height:1.9;color:var(--text);min-height:60px;}
 .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
 
 /* ============ COMPAT ============ */
@@ -533,7 +489,6 @@ section{padding:80px 0;}
   max-width:680px;
   margin:0 auto 40px;
 }
-@media(max-width:600px){.compat-controls{grid-template-columns:1fr;}}
 .compat-sel{
   background:var(--card);
   border:2px solid transparent;
@@ -541,9 +496,8 @@ section{padding:80px 0;}
   padding:16px 20px;
   font-size:16px;
   font-weight:700;
-  box-shadow:var(--shadow);
+  box-shadow:var(--shadow-sm);
   color:var(--text);
-  font-family:inherit;
   cursor:pointer;
   transition:border-color .2s ease;
   width:100%;
@@ -564,11 +518,11 @@ section{padding:80px 0;}
   max-width:680px;
   margin:0 auto;
 }
-.ring-wrap{position:relative;width:180px;height:180px;margin:0 auto 24px;}
-.ring-wrap svg{transform:rotate(-90deg);}
-.ring-bg{fill:none;stroke:#F0EDF5;stroke-width:12;}
-.ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
-.ring-text{
+.score-ring{position:relative;width:180px;height:180px;margin:0 auto 24px;}
+.score-ring svg{transform:rotate(-90deg);}
+.score-ring .ring-bg{fill:none;stroke:var(--line);stroke-width:12;}
+.score-ring .ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
+.score-ring .ring-text{
   position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
@@ -591,35 +545,24 @@ section{padding:80px 0;}
 .compat-desc{color:var(--text);font-size:15px;line-height:1.9;text-align:left;}
 
 /* ============ STATS ============ */
-.stats-total{
-  text-align:center;
-  font-size:17px;
-  margin-bottom:40px;
-  color:var(--muted);
-}
-.stats-total strong{
-  color:var(--primary);
-  font-size:34px;
-  font-weight:900;
-  margin:0 4px;
-}
-.chart-grid{
+.stats-total{text-align:center;font-size:17px;margin-bottom:40px;color:var(--muted);}
+.stats-total strong{color:var(--primary);font-size:34px;font-weight:900;margin:0 4px;}
+.stats-grid{
   display:grid;
   grid-template-columns:1.3fr 1fr;
   gap:24px;
 }
-@media(max-width:900px){.chart-grid{grid-template-columns:1fr;}}
-.chart-card{
+.stats-card{
   background:var(--card);
   border-radius:var(--radius);
   padding:24px;
   box-shadow:var(--shadow);
 }
-.chart-card h3{font-weight:800;font-size:18px;margin-bottom:16px;text-align:center;}
-.chart-box{position:relative;height:360px;}
+.stats-card h3{font-weight:800;font-size:18px;margin-bottom:16px;text-align:center;}
+.stats-chart{position:relative;height:360px;}
 
 /* ============ INSTRUCTOR ============ */
-.instr-card{
+.inst-card{
   background:var(--card);
   border-radius:var(--radius-lg);
   padding:50px 40px;
@@ -628,7 +571,7 @@ section{padding:80px 0;}
   max-width:640px;
   margin:0 auto;
 }
-.instr-avatar{
+.inst-avatar{
   width:140px;
   height:140px;
   border-radius:50%;
@@ -641,19 +584,19 @@ section{padding:80px 0;}
   margin:0 auto 24px;
   box-shadow:0 12px 30px rgba(155,89,245,0.35);
 }
-.instr-name{font-weight:900;font-size:28px;margin-bottom:6px;}
-.instr-title{color:var(--secondary);font-weight:700;margin-bottom:24px;font-size:15px;}
-.instr-bio{
+.inst-name{font-weight:900;font-size:28px;margin-bottom:6px;}
+.inst-title{color:var(--secondary);font-weight:700;margin-bottom:24px;font-size:15px;}
+.inst-bio{
   color:var(--muted);
   font-size:15px;
   line-height:1.9;
   margin-bottom:24px;
-  padding:20px;
-  background:#FAF7FE;
+  padding:22px;
+  background:var(--soft);
   border-radius:var(--radius);
 }
-.instr-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.instr-tag{
+.inst-tags{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.inst-tag{
   padding:6px 14px;
   background:rgba(78,205,196,0.18);
   color:#1F8C83;
@@ -663,7 +606,7 @@ section{padding:80px 0;}
 }
 
 /* ============ COURSE FORM ============ */
-.course-form{
+.course-card{
   background:var(--card);
   border-radius:var(--radius-lg);
   padding:40px;
@@ -671,28 +614,72 @@ section{padding:80px 0;}
   max-width:640px;
   margin:0 auto;
 }
-@media(max-width:640px){.course-form{padding:26px;}}
 .form-field{margin-bottom:20px;}
 .form-label{display:block;font-weight:700;font-size:14px;margin-bottom:8px;}
 .form-label .req{color:var(--primary);}
-.form-input, .form-select, .form-textarea{
+.form-input{
   width:100%;
   padding:14px 18px;
-  border:2px solid #EEE8F5;
+  border:2px solid var(--line);
   border-radius:var(--radius);
   font-size:15px;
-  font-family:inherit;
-  background:#FAF7FE;
+  background:var(--soft);
   color:var(--text);
   transition:all .2s ease;
 }
-.form-input:focus, .form-select:focus, .form-textarea:focus{
-  outline:none;
-  border-color:var(--secondary);
-  background:#fff;
-}
-.form-textarea{min-height:100px;resize:vertical;}
+.form-input:focus{outline:none;border-color:var(--secondary);background:#fff;}
+textarea.form-input{min-height:100px;resize:vertical;}
 .form-submit{width:100%;margin-top:10px;}
+
+/* ============ MODAL ============ */
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(26,26,46,0.6);
+  backdrop-filter:blur(6px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:500;
+  padding:20px;
+}
+.modal-bg.show{display:flex;animation:fadeUp .3s ease;}
+.share-card{
+  background:var(--card);
+  border-radius:var(--radius-lg);
+  padding:40px 30px;
+  max-width:380px;
+  width:100%;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.share-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--primary),var(--accent),var(--secondary),var(--teal));
+}
+.share-inner{
+  background:linear-gradient(135deg,rgba(255,107,157,0.06),rgba(155,89,245,0.06));
+  border-radius:var(--radius);
+  padding:26px 20px;
+  margin-bottom:20px;
+}
+.share-emoji{font-size:64px;margin-bottom:8px;}
+.share-code{
+  font-weight:900;
+  font-size:38px;
+  letter-spacing:3px;
+  margin-bottom:6px;
+  color:var(--secondary);
+}
+.share-name{font-weight:700;margin-bottom:14px;font-size:16px;}
+.share-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.share-traits{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;}
+.share-traits .trait-pill{font-size:11px;padding:4px 10px;}
+.share-mark{font-size:11px;color:var(--muted);margin-top:10px;letter-spacing:2px;}
+.modal-actions{display:flex;gap:10px;justify-content:center;}
 
 /* ============ TOAST ============ */
 .toast{
@@ -716,63 +703,8 @@ section{padding:80px 0;}
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* ============ MODAL ============ */
-.modal-backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(26,26,46,0.6);
-  backdrop-filter:blur(6px);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:500;
-  padding:20px;
-}
-.modal-backdrop.show{display:flex;animation:fadeIn .3s ease;}
-.modal{
-  background:var(--card);
-  border-radius:var(--radius-lg);
-  padding:40px 30px;
-  max-width:380px;
-  width:100%;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.modal::before{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;height:6px;
-  background:linear-gradient(90deg,var(--primary),var(--accent),var(--secondary),var(--teal));
-}
-.share-card{
-  background:linear-gradient(135deg,rgba(255,107,157,0.06),rgba(155,89,245,0.06));
-  border-radius:var(--radius);
-  padding:24px 20px;
-  margin-bottom:20px;
-}
-.share-emoji{font-size:64px;margin-bottom:8px;}
-.share-code{
-  font-weight:900;
-  font-size:38px;
-  letter-spacing:3px;
-  margin-bottom:4px;
-  color:var(--secondary);
-}
-.share-name{font-weight:700;margin-bottom:14px;font-size:16px;}
-.share-desc{font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
-.share-traits{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;}
-.share-traits .trait-pill{font-size:11px;padding:4px 10px;}
-.share-watermark{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:10px;
-  letter-spacing:2px;
-}
-.modal-actions{display:flex;gap:10px;justify-content:center;}
-
 /* ============ LOADING SPINNER ============ */
-.ld{
+.spin{
   display:inline-block;
   width:18px;
   height:18px;
@@ -786,7 +718,7 @@ section{padding:80px 0;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ============ FOOTER ============ */
-.footer{
+footer{
   padding:30px 24px;
   text-align:center;
   color:var(--muted);
@@ -794,274 +726,73 @@ section{padding:80px 0;}
   border-top:1px solid rgba(155,89,245,0.08);
   margin-top:40px;
 }
-.footer a{color:var(--secondary);font-weight:700;}
 
-.ph-section{padding:100px 24px;text-align:center;color:var(--muted);font-size:18px;}
+/* ============ RWD ============ */
+@media(max-width:640px){
+  section{padding:50px 20px;}
+  .quiz-wrapper{padding:28px 22px;}
+  .result-hero{padding:36px 24px;}
+  .course-card{padding:26px;}
+  .compat-controls{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr;}
+  .hero-btns{flex-direction:column;align-items:stretch;}
+  .btn-primary,.btn-outline,.btn-accent{width:100%;}
+  .result-code{font-size:44px;}
+  .result-emoji{font-size:64px;}
+  .nav-links a{padding:6px 10px;font-size:13px;}
+}
 </style>
 </head>
 <body>
 
-<!-- ============ NAV ============ -->
-<nav class="nav">
-  <div class="nav-inner">
-    <div class="logo" id="navLogo">
-      <div class="logo-icon">✦</div>
-      <div class="logo-text" data-i18n="brand">未來之星 MBTI</div>
-    </div>
-    <button class="nav-toggle" id="navToggle" aria-label="menu">☰</button>
-    <div class="nav-links" id="navLinks">
-      <button class="nav-link" data-page="home" data-i18n="nav.home">首頁</button>
-      <button class="nav-link" data-page="intro" data-i18n="nav.intro">認識 MBTI</button>
-      <button class="nav-link" data-page="quiz" data-i18n="nav.quiz">開始測驗</button>
-      <button class="nav-link" data-page="compat" data-i18n="nav.compat">配對相容</button>
-      <button class="nav-link" data-page="stats" data-i18n="nav.stats">即時統計</button>
-      <button class="nav-link" data-page="instructor" data-i18n="nav.instructor">講師介紹</button>
-      <button class="nav-link" data-page="course" data-i18n="nav.course">課程報名</button>
-      <button class="lang-toggle" id="langToggle">EN</button>
-    </div>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">🧠 雀雀MBTI</div>
+  <div class="nav-links">
+    <a id="nav-home" class="active">首頁</a>
+    <a id="nav-intro">MBTI介紹</a>
+    <a id="nav-quiz">開始測驗</a>
+    <a id="nav-compat">配對相容</a>
+    <a id="nav-stats">統計圖</a>
+    <a id="nav-instructor">關於講師</a>
+    <a id="nav-course">課程報名</a>
   </div>
+  <button class="lang-btn" id="langBtn">EN</button>
 </nav>
 
-<!-- ============ HOME ============ -->
-<div class="page active" id="page-home">
-  <section class="hero">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="blob blob-4"></div>
-    <div class="hero-inner">
-      <div class="hero-badge" data-i18n="hero.badge">✨ 20 題找到你的人格原型</div>
-      <h1 class="hero-title">
-        <span data-i18n="hero.title1">探索你的</span>
-        <span class="gradient-text" data-i18n="hero.title2">人格宇宙</span>
-      </h1>
-      <p class="hero-sub" data-i18n="hero.sub">用 20 題情境題，找出專屬於你的 MBTI 型態。理解自己、看見他人，讓關係更自在。</p>
-      <div class="cta-group">
-        <button class="btn btn-primary" data-page="quiz" data-i18n="hero.cta1">開始測驗 →</button>
-        <button class="btn btn-secondary" data-page="intro" data-i18n="hero.cta2">認識 16 型</button>
-      </div>
-      <div class="pill-grid" id="heroPills"></div>
+<!-- HOME -->
+<div id="home">
+  <div class="hero-blob blob1"></div>
+  <div class="hero-blob blob2"></div>
+  <div class="hero-blob blob3"></div>
+  <div class="hero-content">
+    <div class="hero-badge" id="heroBadge">✨ 雀雀認證版 MBTI 測驗</div>
+    <h1 class="hero-title" id="heroTitle">了解你的<br><span class="highlight">人格密碼</span></h1>
+    <p class="hero-sub" id="heroSub">不是一般的網路版測驗⸺這是經過雀雀親自設計的情境題組，更貼近真實生活</p>
+    <div class="hero-btns">
+      <button class="btn-primary" id="heroQuizBtn">🎯 立即測驗</button>
+      <button class="btn-outline" id="heroIntroBtn">認識MBTI</button>
     </div>
-  </section>
-</div>
-
-<!-- ============ EMPTY PAGES (will be filled later) ============ -->
-<!-- ============ INTRO ============ -->
-<div class="page" id="page-intro">
-  <section>
-    <div class="container">
-      <h2 class="section-title"><span data-i18n="intro.t1">認識</span> <span class="gradient-text" data-i18n="intro.t2">MBTI 四維度</span></h2>
-      <p class="section-sub" data-i18n="intro.sub">MBTI 從四個面向描繪你的人格傾向，組合出 16 種獨特型態</p>
-      <div class="dim-grid" id="dimGrid"></div>
-      <h2 class="section-title"><span class="gradient-text" data-i18n="intro.t3">16 型人格</span></h2>
-      <p class="section-sub" data-i18n="intro.sub2">點擊卡片認識每一型的靈魂特質</p>
-      <div class="types-grid" id="typesGrid"></div>
-    </div>
-  </section>
-</div>
-
-<!-- ============ QUIZ ============ -->
-<div class="page" id="page-quiz">
-  <section>
-    <div class="container">
-      <h2 class="section-title"><span data-i18n="quiz.t1">開始</span> <span class="gradient-text" data-i18n="quiz.t2">你的探索</span></h2>
-      <p class="section-sub" data-i18n="quiz.sub">憑直覺選擇最貼近自己的答案，共 20 題</p>
-      <div class="quiz-card">
-        <div class="progress-wrap">
-          <div class="progress-header">
-            <span><span data-i18n="quiz.q">題目</span> <span id="qNow">1</span> / <span id="qTotal">20</span></span>
-            <span id="qPct">5%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="qFill" style="width:5%"></div></div>
-        </div>
-        <div class="quiz-q" id="qText"></div>
-        <div class="opts-wrap" id="qOpts"></div>
-        <div class="quiz-actions">
-          <button class="btn btn-secondary" id="qPrev" data-i18n="quiz.prev">← 上一題</button>
-          <button class="btn btn-primary" id="qNext" data-i18n="quiz.next">下一題 →</button>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ============ RESULT ============ -->
-<div class="page" id="page-result">
-  <section>
-    <div class="container">
-      <div class="result-wrap">
-        <div class="result-hero">
-          <div class="result-emoji" id="rEmoji">✨</div>
-          <div class="result-code" id="rCode">----</div>
-          <div class="result-name" id="rName"></div>
-          <div class="result-name-en" id="rNameEn"></div>
-          <div class="traits-wrap" id="rTraits"></div>
-          <p id="rDesc" style="margin-top:10px;color:var(--muted);font-size:15px;line-height:1.8;max-width:520px;margin-left:auto;margin-right:auto;"></p>
-        </div>
-        <div class="dim-bars">
-          <h3 data-i18n="result.dim">你的四維度傾向</h3>
-          <div id="rBars"></div>
-        </div>
-        <div class="ai-box">
-          <div class="ai-label">
-            <span data-i18n="result.ai">AI 個人化分析</span>
-          </div>
-          <div class="ai-text" id="rAi"><span class="ld"></span><span data-i18n="result.aiLoad">正在為你量身打造分析...</span></div>
-        </div>
-        <div class="result-actions">
-          <button class="btn btn-primary" id="rShare" data-i18n="result.share">✨ 產生分享卡片</button>
-          <button class="btn btn-secondary" id="rRetake" data-i18n="result.retake">🔄 再測一次</button>
-          <button class="btn btn-accent" data-page="course" data-i18n="result.course">📚 報名課程</button>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ============ COMPAT ============ -->
-<div class="page" id="page-compat">
-  <section>
-    <div class="container">
-      <h2 class="section-title"><span data-i18n="compat.t1">配對</span> <span class="gradient-text" data-i18n="compat.t2">相容性</span></h2>
-      <p class="section-sub" data-i18n="compat.sub">選擇兩個型態，看看你們在一起會擦出什麼火花</p>
-      <div class="compat-controls">
-        <select class="compat-sel" id="cA"></select>
-        <div class="compat-heart">💞</div>
-        <select class="compat-sel" id="cB"></select>
-      </div>
-      <div class="compat-result" id="cResult">
-        <div class="ring-wrap">
-          <svg width="180" height="180" viewBox="0 0 180 180">
-            <defs>
-              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#FF6B9D"/>
-                <stop offset="100%" stop-color="#9B59F5"/>
-              </linearGradient>
-            </defs>
-            <circle class="ring-bg" cx="90" cy="90" r="78"/>
-            <circle class="ring-fg" id="cRing" cx="90" cy="90" r="78" stroke-dasharray="490" stroke-dashoffset="490"/>
-          </svg>
-          <div class="ring-text" id="cScore">0</div>
-        </div>
-        <div class="compat-level" id="cLevel">--</div>
-        <div class="compat-desc" id="cDesc"></div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ============ STATS ============ -->
-<div class="page" id="page-stats">
-  <section>
-    <div class="container">
-      <h2 class="section-title"><span data-i18n="stats.t1">即時</span> <span class="gradient-text" data-i18n="stats.t2">人格分佈</span></h2>
-      <p class="section-sub" data-i18n="stats.sub">看看全台有多少人跟你相似，哪個型態最稀有</p>
-      <div class="stats-total" id="statsTotal"><span class="ld"></span><span data-i18n="stats.load">正在載入統計資料...</span></div>
-      <div class="chart-grid">
-        <div class="chart-card">
-          <h3 data-i18n="stats.c1">16 型人格分佈</h3>
-          <div class="chart-box"><canvas id="barChart"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <h3 data-i18n="stats.c2">四大族群佔比</h3>
-          <div class="chart-box"><canvas id="doughChart"></canvas></div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ============ INSTRUCTOR ============ -->
-<div class="page" id="page-instructor">
-  <section>
-    <div class="container">
-      <h2 class="section-title"><span data-i18n="instr.t1">認識</span> <span class="gradient-text" data-i18n="instr.t2">雀雀老師</span></h2>
-      <p class="section-sub" data-i18n="instr.sub">帶你用 MBTI 看見關係、職場與自我的全新可能</p>
-      <div class="instr-card">
-        <div class="instr-avatar">✦</div>
-        <div class="instr-name" data-i18n="instr.name">雀雀 Queque</div>
-        <div class="instr-title" data-i18n="instr.title">MBTI 認證講師 ✦ 人格心理學研究者</div>
-        <div class="instr-bio" data-i18n="instr.bio">講師資料即將更新，敬請期待。雀雀老師擅長以情境題帶領學員快速辨識自己與他人的人格傾向，用輕鬆幽默的方式，讓 MBTI 真正成為關係溝通與自我覺察的工具。</div>
-        <div class="instr-tags">
-          <span class="instr-tag" data-i18n="instr.tag1">MBTI 認證</span>
-          <span class="instr-tag" data-i18n="instr.tag2">人格心理學</span>
-          <span class="instr-tag" data-i18n="instr.tag3">關係溝通</span>
-          <span class="instr-tag" data-i18n="instr.tag4">職場應用</span>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ============ COURSE ============ -->
-<div class="page" id="page-course">
-  <section>
-    <div class="container">
-      <h2 class="section-title"><span data-i18n="course.t1">加入</span> <span class="gradient-text" data-i18n="course.t2">MBTI 探索課</span></h2>
-      <p class="section-sub" data-i18n="course.sub">留下你的資訊，搶先收到開課通知與限定早鳥優惠</p>
-      <form class="course-form" id="courseForm" autocomplete="off">
-        <div class="form-field">
-          <label class="form-label" data-i18n="course.name">姓名 <span class="req">*</span></label>
-          <input class="form-input" type="text" name="name" id="fName" required>
-        </div>
-        <div class="form-field">
-          <label class="form-label" data-i18n="course.email">Email <span class="req">*</span></label>
-          <input class="form-input" type="email" name="email" id="fEmail" required>
-        </div>
-        <div class="form-field">
-          <label class="form-label" data-i18n="course.mbti">你的 MBTI（選填）</label>
-          <select class="form-select" name="mbti" id="fMbti">
-            <option value="" data-i18n="course.mbtiX">不確定 / 還沒測</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label class="form-label" data-i18n="course.expect">課程期望</label>
-          <select class="form-select" name="expect" id="fExpect">
-            <option value="self" data-i18n="course.e1">自我探索</option>
-            <option value="relation" data-i18n="course.e2">關係溝通</option>
-            <option value="work" data-i18n="course.e3">職場應用</option>
-            <option value="other" data-i18n="course.e4">其他</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label class="form-label" data-i18n="course.note">備註（選填）</label>
-          <textarea class="form-textarea" name="note" id="fNote"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary form-submit" id="fSubmit" data-i18n="course.submit">送出報名 ✦</button>
-      </form>
-    </div>
-  </section>
-</div>
-
-<!-- ============ FOOTER ============ -->
-<footer class="footer">
-  <div data-i18n="footer.txt">© 未來之星 AI ✦ MBTI 人格測驗．探索自己，理解他人</div>
-</footer>
-
-<!-- ============ TOAST ============ -->
-<div class="toast" id="toast"></div>
-
-<!-- ============ SHARE MODAL ============ -->
-<div class="modal-backdrop" id="shareModal">
-  <div class="modal">
-    <div class="share-card">
-      <div class="share-emoji" id="sEmoji">✨</div>
-      <div class="share-code" id="sCode">----</div>
-      <div class="share-name" id="sName"></div>
-      <div class="share-desc" id="sDesc"></div>
-      <div class="share-traits" id="sTraits"></div>
-      <div class="share-watermark">✦ 未來之星 AI ✦ MBTI.FUTURESTARAI.COM</div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" id="sSave" data-i18n="share.save">📸 儲存圖片</button>
-      <button class="btn btn-secondary" id="sClose" data-i18n="share.close">關閉</button>
-    </div>
+    <div class="mbti-pills" id="homePills"></div>
   </div>
 </div>
 
-<script>
-// 待填入：狀態、資料、功能函式、事件綁定
-</script>
+<!-- 各頁面（空的，之後填內容） -->
+<div id="intro" class="page"></div>
+<div id="quiz" class="page"></div>
+<div id="result" class="page"></div>
+<div id="compat" class="page"></div>
+<div id="stats" class="page"></div>
+<div id="instructor" class="page"></div>
+<div id="course" class="page"></div>
 
+<!-- Modal + Toast + Footer（空的） -->
+<div class="modal-bg" id="shareModal"></div>
+<div class="toast" id="toast"></div>
+<footer><p>© 2026 雀雀認證MBTI · 用心理學認識自己 🧠💜</p></footer>
+
+<script>
+// JS 之後加
+</script>
 </body>
 </html>
