@@ -966,6 +966,87 @@ var QS = [
   {dim:'JP',cat:{zh:'生活方式 J/P',en:'Lifestyle J/P'},q:{zh:'歐洲旅行發現搭錯火車，你會？',en:'Mid-trip you realize you took the wrong train. You...'},opts:[{zh:'很焦慮，趕快查該如何搭回去',en:'Get anxious — frantically look up how to get back on track',e:'J'},{zh:'乾脆換個地方玩玩，查查有什麼其他景點',en:'Embrace it — check what is interesting in this unexpected place',e:'P'}]},
   {dim:'JP',cat:{zh:'生活方式 J/P',en:'Lifestyle J/P'},q:{zh:'做重大決策時，你覺得自己果斷嗎？',en:'When making major life decisions, would you say you are decisive?'},opts:[{zh:'做重大決策時還算果斷，下好離手',en:'Yes, fairly decisive — once I decide, I commit',e:'J'},{zh:'會猶豫不決，傾向拖延決策時間',en:'I tend to hesitate and prefer to delay major decisions',e:'P'}]}
 ];
+
+var COMPAT_SCORES = {
+  INTJ:{ENFP:92,ENTP:88,INFJ:85,ENTJ:78,INFP:75,INTP:72,ISFP:80,ENFJ:74,ISTJ:65,ISFJ:62,ESTJ:60,ESFJ:58,ISTP:68,ESTP:55,ESFP:52,INTJ:50},
+  INTP:{ENTJ:90,ENFJ:85,INTJ:75,ENTP:70,INFJ:80,ISTP:72,ESTP:68,INFP:77,ENFP:74,ISTJ:65,ISFJ:62,ESTJ:60,ESFJ:58,ISFP:70,ESFP:55,INTP:50},
+  ENTJ:{INTP:90,INFP:88,INTJ:82,ENFP:85,ENTP:78,ISTJ:75,ISFP:72,ENFJ:76,INFJ:74,ISFJ:65,ESTJ:68,ESFJ:62,ISTP:70,ESTP:65,ESFP:58,ENTJ:52},
+  ENTP:{INTJ:88,INFJ:92,ENTJ:78,INTP:70,ENFP:75,ISTP:68,INFP:80,ENFJ:74,ISFP:65,ISTJ:60,ISFJ:58,ESTJ:55,ESFJ:52,ESTP:62,ESFP:55,ENTP:50},
+  INFJ:{ENTP:92,ENFP:88,INTJ:85,INFP:80,ENTJ:75,ENFJ:70,ISTP:72,ISFP:78,INTP:80,ISTJ:62,ISFJ:65,ESTJ:58,ESFJ:60,ESTP:55,ESFP:52,INFJ:50},
+  INFP:{ENFJ:90,ENTJ:88,INFJ:80,ENTP:80,ENFP:75,INTJ:75,ESFJ:72,INTP:77,ISFJ:70,ISTJ:65,ESTJ:60,ESFP:58,ISTP:65,ESTP:55,ISFP:72,INFP:50},
+  ENFJ:{INFP:90,INTP:85,ISFP:88,INFJ:70,ENFP:78,INTJ:72,ISTJ:75,ENTP:74,ISFJ:72,ESTJ:68,ESFJ:65,ISTP:65,ESTP:62,ESFP:68,ENTJ:76,ENFJ:55},
+  ENFP:{INTJ:92,INFJ:88,ENTJ:85,ENFJ:78,INFP:75,ISFJ:80,INTP:72,ENTP:75,ISTJ:68,ESTJ:62,ESFJ:70,ISTP:65,ESTP:60,ESFP:72,ISFP:70,ENFP:55},
+  ISTJ:{ESFP:88,ESTP:82,ISFJ:80,ENFJ:75,ENFP:72,ENTJ:75,ESFJ:78,ENTP:65,INFP:68,INTP:65,INTJ:65,INFJ:62,ISFP:65,ISTP:70,ESTJ:72,ISTJ:55},
+  ISFJ:{ESFP:90,ESTP:85,ENFP:80,ISTJ:80,ESTJ:78,ESFJ:82,ENFJ:72,ENTP:62,INFP:70,INTP:62,INTJ:60,INFJ:65,ISFP:75,ISTP:68,ENTJ:65,ISFJ:55},
+  ESTJ:{ISFP:88,ISTP:82,ISTJ:72,ISFJ:78,ESFJ:80,ENFJ:68,ENFP:62,INFP:60,INTP:60,INTJ:60,INFJ:58,ENTP:55,ESTP:72,ESFP:70,ENTJ:68,ESTJ:55},
+  ESFJ:{ISFP:88,ISTP:85,ISTJ:78,ISFJ:82,ESTJ:80,ENFJ:65,ENFP:70,INFP:72,INTP:58,INTJ:58,INFJ:60,ENTP:52,ESTP:68,ESFP:75,ENTJ:62,ESFJ:55},
+  ISTP:{ESFJ:85,ESTJ:82,ISFJ:68,ENFJ:65,ESFP:78,ESTP:75,ENTJ:70,ISFP:74,ENTP:68,INFJ:72,ENFP:65,INTP:72,INTJ:68,INFP:65,ISTJ:70,ISTP:55},
+  ISFP:{ENFJ:88,ESTJ:88,ESFJ:88,ENTJ:72,INFJ:78,ISTJ:65,ISTP:74,ESFP:76,ENTP:65,ENFP:70,INTP:70,INTJ:80,ESTP:68,INFP:72,ISFJ:75,ISFP:52},
+  ESTP:{ISFJ:85,ISTJ:82,ESFP:75,ISTP:75,ENFJ:62,ESTJ:72,ESFJ:68,ENTJ:65,ENTP:62,INFJ:55,INTJ:55,INTP:68,ENFP:60,INFP:55,ISFP:68,ESTP:52},
+  ESFP:{ISTJ:88,ISFJ:90,ISTP:78,ESTJ:70,ENFJ:68,ESFJ:75,ENTJ:58,ENTP:55,INTJ:52,INTP:55,INFJ:52,ENFP:72,ESTP:75,INFP:58,ISFP:76,ESFP:55}
+};
+
+var T = {
+  zh:{
+    navHome:'首頁',navIntro:'MBTI介紹',navQuiz:'開始測驗',navCompat:'配對相容',navStats:'統計圖',navInst:'關於講師',navCourse:'課程報名',
+    heroBadge:'✨ 雀雀認證版 MBTI 測驗',
+    heroSub:'不是一般的網路版測驗，這是經過雀雀親自設計的情境題組，更貼近真實生活，幫你找到最準確的 MBTI 型態',
+    heroQuiz:'🎯 立即測驗',heroIntro:'認識MBTI',
+    introTag:'什麼是MBTI',introTitle:'四個維度，十六種人格',introSub:'MBTI 測量你在四個心理維度上的偏好，組合出獨特的人格型態',
+    typesTitle:'✨ 十六種人格',typesSub:'點選任一型態了解詳情',
+    quizTag:'雀雀認證測驗',quizTitle:'開始你的MBTI測驗',quizSub:'20題情境式問題，約需5分鐘',
+    back:'上一題',restart:'重新開始',next:'下一題',finish:'查看結果 🎉',progress:'進度',
+    compatTag:'配對相容性',compatTitle:'你們合適嗎？',compatSub:'選擇兩種MBTI型態，看看相處化學',
+    compatLblA:'第一個人',compatLblB:'第二個人',compatPlaceholder:'選擇型態...',
+    statsTag:'即時統計',statsTitle:'大家都是什麼型？',statsSub:'統計所有完成測驗者的MBTI分佈',
+    statsBar:'📊 型態分佈',statsDo:'🍩 大類佔比',
+    instTag:'關於講師',instTitle:'認識雀雀',instSub:'MBTI 認證講師 人格心理學研究者',
+    instName:'雀雀 Queque',instRole:'MBTI 認證講師 人格心理學研究者',
+    instBio:'（講師資料即將更新，敬請期待）',
+    courseTag:'課程報名',courseTitle:'加入雀雀的課程',courseSub:'了解自己、理解他人，從MBTI開始',
+    fName:'姓名 / 暱稱',fMbti:'你的 MBTI（可選填）',fGoal:'你最想在課程中得到什麼？',fNote:'備註（選填）',
+    fSubmit:'🎉 送出報名',fFormNote:'資料僅用於課程聯繫，不會外流',
+    aiLabel:'🤖 AI 個人化分析',aiLoading:'分析生成中...',
+    shareBtn:'📸 產生分享卡片',retryBtn:'再測一次',
+    modalDl:'📸 儲存圖片',modalCl:'關閉',
+    toastEmpty:'請填寫姓名和Email',toastOk:'報名成功！我們會盡快聯絡你',toastErr:'發生錯誤，請稍後再試',
+    toastScreenshot:'請截圖儲存分享卡！',
+    statsPeople:'共 X 人完成測驗',statsLoading:'載入中...',
+    compatPerfect:'超級配！',compatGood:'蠻合適的',compatOk:'需要磨合',compatHard:'挑戰型配對'
+  },
+  en:{
+    navHome:'Home',navIntro:'About MBTI',navQuiz:'Take Quiz',navCompat:'Compatibility',navStats:'Stats',navInst:'Instructor',navCourse:'Enroll',
+    heroBadge:'✨ Verified MBTI by Queque',
+    heroSub:'Not your average online quiz — real-life scenarios designed by Queque herself, helping you find your most accurate MBTI type.',
+    heroQuiz:'🎯 Start Quiz',heroIntro:'Learn MBTI',
+    introTag:'What is MBTI',introTitle:'4 Dimensions, 16 Personalities',introSub:'MBTI measures your preference across 4 dimensions to reveal your unique personality type.',
+    typesTitle:'✨ 16 Personality Types',typesSub:'Click any type to learn more',
+    quizTag:'Queque Certified Quiz',quizTitle:'Start Your MBTI Quiz',quizSub:'20 situational questions, approx. 5 minutes',
+    back:'Back',restart:'Restart',next:'Next',finish:'See Result 🎉',progress:'Progress',
+    compatTag:'Compatibility',compatTitle:'Are You Compatible?',compatSub:'Select two MBTI types to explore your chemistry',
+    compatLblA:'Person A',compatLblB:'Person B',compatPlaceholder:'Select type...',
+    statsTag:'Live Stats',statsTitle:'What Types Are People?',statsSub:'Real-time MBTI distribution from all test takers',
+    statsBar:'📊 Type Distribution',statsDo:'🍩 Category Ratio',
+    instTag:'About Instructor',instTitle:'Meet Queque',instSub:'Certified MBTI Facilitator | Personality Psychology Researcher',
+    instName:'Queque',instRole:'Certified MBTI Facilitator | Personality Researcher',
+    instBio:'(Instructor bio coming soon)',
+    courseTag:'Enroll Now',courseTitle:'Join Queque\'s Workshop',courseSub:'Understand yourself and others — starting with MBTI',
+    fName:'Name / Nickname',fMbti:'Your MBTI (optional)',fGoal:'What do you hope to gain?',fNote:'Notes (optional)',
+    fSubmit:'🎉 Submit Registration',fFormNote:'Your info is used for course communication only.',
+    aiLabel:'🤖 AI Personalized Analysis',aiLoading:'Generating analysis...',
+    shareBtn:'📸 Generate Share Card',retryBtn:'Retake Quiz',
+    modalDl:'📸 Save Image',modalCl:'Close',
+    toastEmpty:'Please fill in name and email',toastOk:'Registered! We\'ll be in touch soon',toastErr:'Error, please try again later',
+    toastScreenshot:'Please screenshot to save your share card!',
+    statsPeople:'X people have taken the quiz',statsLoading:'Loading...',
+    compatPerfect:'Perfect Match!',compatGood:'Pretty Good',compatOk:'Needs Work',compatHard:'Challenging Match'
+  }
+};
+
+var WORKER_URL = 'https://api.futurestarai.com';
+var GEMINI_EP = WORKER_URL + '/gemini';
+var STATS_EP = WORKER_URL + '/mbti-stats';
+var FORM_EP = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 </script>
 </body>
 </html>
