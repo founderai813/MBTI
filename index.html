@@ -918,7 +918,31 @@ footer{
 <footer><p>© 2026 雀雀認證MBTI · 用心理學認識自己 🧠💜</p></footer>
 
 <script>
-// JS 之後加
+var TYPES = {
+  INTJ:{name:{zh:'建築師',en:'Architect'},emoji:'🏗',color:'#534AB7',traits:{zh:['獨立','戰略性','決斷','完美主義'],en:['Independent','Strategic','Decisive','Perfectionist']},desc:{zh:'思維縝密、有遠見的策略家，凡事都有計畫',en:'Thoughtful strategists with a vision and a plan for everything'}},
+  INTP:{name:{zh:'邏輯學家',en:'Logician'},emoji:'🔬',color:'#185FA5',traits:{zh:['分析','創新','客觀','探索'],en:['Analytical','Innovative','Objective','Exploratory']},desc:{zh:'充滿求知慾的思想家，熱愛理論與抽象思考',en:'Inquisitive thinkers who love theory and abstract ideas'}},
+  ENTJ:{name:{zh:'指揮官',en:'Commander'},emoji:'👑',color:'#3B6D11',traits:{zh:['領導','果斷','高效','自信'],en:['Leader','Decisive','Efficient','Confident']},desc:{zh:'天生的領導者，充滿魅力，擅長組織規劃',en:'Natural leaders, charismatic and skilled at organizing plans'}},
+  ENTP:{name:{zh:'辯論家',en:'Debater'},emoji:'⚡',color:'#854F0B',traits:{zh:['機智','好辯','創意','大膽'],en:['Witty','Argumentative','Creative','Bold']},desc:{zh:'聰明活潑的思考者，喜歡挑戰一切想法',en:'Smart and curious thinkers who love challenging ideas'}},
+  INFJ:{name:{zh:'提倡者',en:'Advocate'},emoji:'🌿',color:'#0F6E56',traits:{zh:['洞察','理想','共情','堅定'],en:['Insightful','Idealistic','Empathetic','Firm']},desc:{zh:'安靜而神秘，卻能激勵他人的理想主義者',en:'Quiet but inspiring idealists who motivate others'}},
+  INFP:{name:{zh:'調停者',en:'Mediator'},emoji:'🌸',color:'#993556',traits:{zh:['感性','創意','善良','忠誠'],en:['Sensitive','Creative','Kind','Loyal']},desc:{zh:'詩意的靈魂，被內在使命驅動的理想主義者',en:'Poetic souls driven by a deep inner mission'}},
+  ENFJ:{name:{zh:'主人公',en:'Protagonist'},emoji:'🌟',color:'#993C1D',traits:{zh:['魅力','利他','熱情','感染力'],en:['Charismatic','Altruistic','Passionate','Inspiring']},desc:{zh:'充滿魅力、鼓舞人心的天生領袖',en:'Charismatic and inspiring leaders who captivate everyone'}},
+  ENFP:{name:{zh:'活動家',en:'Campaigner'},emoji:'🎪',color:'#D4537E',traits:{zh:['熱情','創意','社交','樂觀'],en:['Enthusiastic','Creative','Sociable','Optimistic']},desc:{zh:'充滿熱情與創造力，熱愛人與可能性',en:'Enthusiastic and creative, who love people and possibilities'}},
+  ISTJ:{name:{zh:'物流師',en:'Logistician'},emoji:'📋',color:'#444441',traits:{zh:['負責','實際','有條理','可靠'],en:['Responsible','Practical','Organized','Reliable']},desc:{zh:'務實可靠的完成者，維護傳統與秩序',en:'Practical and reliable, dedicated to duty and order'}},
+  ISFJ:{name:{zh:'守衛者',en:'Defender'},emoji:'🛡',color:'#5F5E5A',traits:{zh:['溫暖','細心','忠誠','保護'],en:['Warm','Careful','Loyal','Protective']},desc:{zh:'溫暖而可靠的守護者，默默為他人付出',en:'Warm and reliable protectors who quietly serve others'}},
+  ESTJ:{name:{zh:'總經理',en:'Executive'},emoji:'💼',color:'#2C2C2A',traits:{zh:['組織','果斷','傳統','高效'],en:['Organized','Decisive','Traditional','Efficient']},desc:{zh:'出色的管理者，擅長組織與管理人事',en:'Excellent administrators at organizing people and projects'}},
+  ESFJ:{name:{zh:'執政官',en:'Consul'},emoji:'🤝',color:'#0C447C',traits:{zh:['關懷','合作','忠誠','負責'],en:['Caring','Cooperative','Loyal','Responsible']},desc:{zh:'非常有愛心，喜歡幫助周圍的人',en:'Caring and loyal, always eager to help those around them'}},
+  ISTP:{name:{zh:'鑑賞家',en:'Virtuoso'},emoji:'🔧',color:'#633806',traits:{zh:['實際','觀察力','冷靜','靈活'],en:['Practical','Observant','Calm','Flexible']},desc:{zh:'大膽且實際的實驗者，喜歡動手嘗試',en:'Bold and practical experimenters who love to try things'}},
+  ISFP:{name:{zh:'探險家',en:'Adventurer'},emoji:'🎨',color:'#72243E',traits:{zh:['藝術','隨性','感性','獨立'],en:['Artistic','Spontaneous','Sensitive','Independent']},desc:{zh:'靈活迷人的藝術家，隨時準備探索',en:'Flexible and charming artists, always ready to explore'}},
+  ESTP:{name:{zh:'企業家',en:'Entrepreneur'},emoji:'🚀',color:'#993C1D',traits:{zh:['行動力','魅力','冒險','機智'],en:['Action','Charismatic','Adventurous','Clever']},desc:{zh:'精明活潑的行動派，喜歡生活在邊緣',en:'Smart and energetic risk-takers who live on the edge'}},
+  ESFP:{name:{zh:'表演者',en:'Entertainer'},emoji:'🎭',color:'#72243E',traits:{zh:['活力','即興','娛樂','熱情'],en:['Energetic','Spontaneous','Fun','Enthusiastic']},desc:{zh:'充滿活力、喜歡娛樂他人的自發性人格',en:'Spontaneous, energetic and enthusiastic entertainers'}}
+};
+
+var DIMS = [
+  {icon:'⚡',title:{zh:'能量來源',en:'Energy Source'},lbl:{zh:'E 外向',en:'E Extroversion'},rbr:{zh:'I 內向',en:'I Introversion'},color:'#FF6B9D',desc:{zh:'你從哪裡獲得能量？社交互動讓你充電，還是需要獨處才能恢復？',en:'Where do you get your energy? Social interaction or solitude?'}},
+  {icon:'🔍',title:{zh:'資訊輸入',en:'Information Input'},lbl:{zh:'S 實感',en:'S Sensing'},rbr:{zh:'N 直覺',en:'N Intuition'},color:'#9B59F5',desc:{zh:'你如何收集資訊？偏好具體事實，還是傾向看見模式與可能性？',en:'How do you take in info? Concrete facts, or patterns and possibilities?'}},
+  {icon:'⚖️',title:{zh:'決策方式',en:'Decision Making'},lbl:{zh:'T 思考',en:'T Thinking'},rbr:{zh:'F 情感',en:'F Feeling'},color:'#4ECDC4',desc:{zh:'你如何做決定？依賴邏輯分析，還是考量人際關係與個人價值觀？',en:'How do you decide? Logic and analysis, or relationships and values?'}},
+  {icon:'📅',title:{zh:'生活方式',en:'Lifestyle'},lbl:{zh:'J 判斷',en:'J Judging'},rbr:{zh:'P 感知',en:'P Perceiving'},color:'#FFD93D',desc:{zh:'你如何安排生活？喜歡有計劃有結構，還是保持彈性隨機應變？',en:'How do you live? Prefer structure and plans, or stay flexible and spontaneous?'}}
+];
 </script>
 </body>
 </html>
