@@ -1196,6 +1196,14 @@ function renderQuiz() {
     btn.addEventListener('click', function() {
       answers[currentQ] = parseInt(btn.getAttribute('data-idx'));
       renderQuiz();
+      setTimeout(function() {
+        if (currentQ < QS.length - 1) {
+          currentQ++;
+          renderQuiz();
+        } else {
+          calcResult();
+        }
+      }, 400);
     });
   });
   document.getElementById('qBack').addEventListener('click', function() {
